@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.net.URL;
 
 public class ExternalFrame extends JFrame{
@@ -22,15 +24,10 @@ public class ExternalFrame extends JFrame{
 		this.setResizable(false);
 
 		this.add(titlePanel);
-		this.add(bodyPanel);
 		this.add(bodyScroll);
 		
 		this.setVisible(true);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}
-	
-	public static void main(String[] args) {
-		ExternalFrame externalFrame = new ExternalFrame();
 	}
 }
 
@@ -46,27 +43,5 @@ class ExternalTitlePanel extends JPanel{
 		this.setBounds(0, 0, screenWidth, screenHeight / 5);
 		this.setBackground(Color.yellow);
 		this.add(titleLabel);
-	}
-}
-class ExternalBodyPanel extends JPanel{
-	private PlusButton plusButton;
-	
-	ExternalBodyPanel(int screenWidth, int screenHeight){
-		super();
-		URL imgURL = this.getClass().getResource("PlusImage.png");
-		plusButton = new PlusButton(new ImageIcon(imgURL));
-		
-		this.add(plusButton);
-		this.setBounds(0, screenHeight / 5, screenWidth, screenHeight);
-		this.setBackground(Color.green);
-	}
-}
-
-class ExternalBodyScrollPane extends JScrollPane{
-	
-	ExternalBodyScrollPane(Component view, int screenWidth, int screenHeight){
-		super(view);
-		
-		this.setBounds(0, screenHeight / 5, screenWidth, screenHeight - screenHeight / 5);
 	}
 }

@@ -6,7 +6,8 @@ import javax.swing.*;
 public class PlusButton extends JButton implements ActionListener{
 	PlusButton(Icon icon){
 		super(icon);
-		this.setBounds(getXYnSize()[0], getXYnSize()[1], getXYnSize()[2], 20000);
+		int[] tmp = this.getXYnSize();
+		this.setBounds(tmp[0], tmp[1], tmp[2], tmp[3]);
 		this.setBorderPainted(false);
 		this.setContentAreaFilled(false);
 		this.setFocusPainted(false);
@@ -40,5 +41,7 @@ public class PlusButton extends JButton implements ActionListener{
 		// TODO Auto-generated method stub
 		System.out.println("Å×½ºÆ®");
 		Counter.addTableCount();
+		int[] tmp = this.getXYnSize();
+		this.setBounds(tmp[0], tmp[1], tmp[2], tmp[3]);
 	}
 }

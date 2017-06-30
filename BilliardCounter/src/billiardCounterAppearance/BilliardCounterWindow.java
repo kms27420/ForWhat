@@ -1,17 +1,12 @@
 package billiardCounterAppearance;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.GraphicsDevice;
-import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 
 import javax.swing.JFrame;
 
-import tableStatusScreenControl.TableStatusScreenStorer;
+import component.Window;
 
 /**
  * 
@@ -22,16 +17,16 @@ import tableStatusScreenControl.TableStatusScreenStorer;
  * @author Kwon
  *
  */
-public class BilliardCounterWindow extends JFrame{
-	private final BilliardCounterTitleImageBanner TITLE_IMAGE_BANNER = new BilliardCounterTitleImageBanner();	// 프로그램 명을 담고 있는 ImageBanner
+public class BilliardCounterWindow extends Window{
+	private final BilliardCounterNameBanner TITLE_IMAGE_BANNER = new BilliardCounterNameBanner();	// 프로그램 명을 담고 있는 ImageBanner
 	private final BilliardCounterResultScreen RESULT_SCREEN = new BilliardCounterResultScreen();				// 프로그램 내용을 담고 있는 Screen
-	
-	private boolean isInitedAlready;
-	
+		
 	public BilliardCounterWindow(){
-		this.initBilliardCounterScreen();
+		this.initThisWindow();
 	}
-	private void initBilliardCounterScreen(){
+	
+	@Override
+	protected void initThisWindow() {
 		Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		this.setBounds(0, 0, windowSize.width, windowSize.height - 50);
@@ -41,11 +36,13 @@ public class BilliardCounterWindow extends JFrame{
 		this.addComponents();
 		this.setVisible(true);
 	}
-	private void addComponents(){
+	@Override
+	protected void addComponents() {
 		this.add(TITLE_IMAGE_BANNER);
 		this.add(RESULT_SCREEN);
 	}
-	private void setComponents(){
+	@Override
+	protected void initComponents() {
 		int titleX, titleY, resultX, resultY;
 		int titleWidth, titleHeight, resultWidth, resultHeight;
 		
@@ -57,14 +54,5 @@ public class BilliardCounterWindow extends JFrame{
 		TITLE_IMAGE_BANNER.setBounds(titleX, titleY, titleWidth, titleHeight);
 		RESULT_SCREEN.setSize(new Dimension(resultWidth, resultHeight));
 		RESULT_SCREEN.setLocation(resultX, resultY);
-	}
-	
-	@Override
-	public void paint(Graphics g){
-		super.paint(g);
-		if(!isInitedAlready){
-			this.setComponents();
-			isInitedAlready = true;
-		}
 	}
 }

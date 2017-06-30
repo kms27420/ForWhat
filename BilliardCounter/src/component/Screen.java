@@ -1,5 +1,7 @@
 package component;
 
+import java.awt.Graphics;
+
 import javax.swing.JPanel;
 
 /**
@@ -9,7 +11,7 @@ import javax.swing.JPanel;
  */
 public abstract class Screen extends JPanel{
 	private int screenNumber;	// 현재 스크린의 번호, 스크린의 번호가 필요한 경우 사용된다.
-	
+	private boolean isInitedAlready;		// paint가 처음 될때 initComponent를 해주었는가를 판단하는 boolean변수
 	/**
 	 * screenNumber를 설정해주는 매서드
 	 * @param screenNumber  screenNumber에 대입될 값
@@ -30,7 +32,7 @@ public abstract class Screen extends JPanel{
 	 */
 	protected abstract void initThisScreen();
 	/**
-	 * 현 Screen에 포함될 컴포넌트들의 기본 설정(사이즈 등)을 초기화해주는 매서드
+	 * 현 Screen에 포함될 컴포넌트들의 기본 설정(사이즈 등)을 본 Screen이 paint되는 시점에서 초기화해주는 매서드
 	 */
 	protected abstract void initComponents();
 	/**
@@ -41,4 +43,13 @@ public abstract class Screen extends JPanel{
 	 * 현 Screen에 나타날 컴포넌트들의 상황을 최신화해주는 매서드
 	 */
 	protected abstract void updateComponents();
+	
+	@Override
+	public void paint(Graphics g){
+		super.paint(g);
+		if(!isInitedAlready){
+			isInitedAlready = true;
+			this.initComponents();
+		}
+	}
 }

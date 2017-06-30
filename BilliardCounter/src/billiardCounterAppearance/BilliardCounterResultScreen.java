@@ -15,16 +15,22 @@ import tableStatusScreenControl.TableStatusBoard;
  *
  */
 public class BilliardCounterResultScreen extends JScrollPane{
-	private static final TableStatusBoard TABLE_STATUS_SCREEN_BORARD = new TableStatusBoard();	// TableStatusScreen을 담고 있는 Board
+	private final TableStatusBoard TABLE_STATUS_SCREEN_BORARD = new TableStatusBoard();	// TableStatusScreen을 담고 있는 Board
 	private boolean isInitedAlready;
 	
 	public BilliardCounterResultScreen() {
-		this.initBilliardCounterResultScreen();
+		this.initThisScreen();
+		this.addComponents();
 	}
 	
-	private void initBilliardCounterResultScreen(){
-		this.setViewportView(TABLE_STATUS_SCREEN_BORARD);
+	private void initThisScreen(){
 		this.getVerticalScrollBar().setUnitIncrement(40);
+	}
+	private void addComponents(){
+		this.setViewportView(TABLE_STATUS_SCREEN_BORARD);
+	}
+	private void initComponents(){
+		TABLE_STATUS_SCREEN_BORARD.setBounds(0, 0, this.getWidth(), this.getHeight());
 		TABLE_STATUS_SCREEN_BORARD.setBackground(new Color(0x00AA00));
 	}
 	
@@ -33,7 +39,7 @@ public class BilliardCounterResultScreen extends JScrollPane{
 		super.paint(g);
 		if(!isInitedAlready){
 			isInitedAlready = true;
-			TABLE_STATUS_SCREEN_BORARD.setBounds(0, 0, this.getWidth(), this.getHeight());
+			this.initComponents();
 			this.repaint();
 			this.revalidate();
 		}

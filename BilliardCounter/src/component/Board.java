@@ -10,38 +10,35 @@ import javax.swing.JPanel;
  *
  */
 public abstract class Board extends JPanel{
-	protected BoardAligner boardAligner;		// Board 클래스의 컴포넌트들을 Board위에 정렬해주는 클래스의 인스턴스 변수
-	private boolean isInitedAlready;		// paint가 처음 될때 initComponent를 해주었는가를 판단하는 boolean변수
+	protected ScreenList screenList;
+	protected BoardAligner boardAligner;
+	private boolean isInitedAlready;
 	
-	/**
-	 * boardAligner의 초기화를 해주는 매서드
-	 * @param boardAligner, boardAligner에 대입할 값
-	 */
+	protected void initScreenList(ScreenList screenList){
+		this.screenList = screenList;
+	}
 	protected void initBoardAligner(BoardAligner boardAligner){
 		this.boardAligner = boardAligner;
 	}
-	/**
-	 * 현 Board에 컴포넌트들을 추가하는 매서드
-	 */
 	protected void addComponents(){
-		boardAligner.addComponentsToBoard();
+		for(int i = 0; i < screenList.getMaxRow(); i++){
+			for(int j = 0; j < screenList.getMaxCol(); j++){
+				this.add(screenList.getScreen(i, j));
+			}
+		}
 	}
-	
-	/**
-	 * 현재 Board의 기본 설정(layout, background 등)의 초기화를 해주는 매서드
-	 */
-	protected abstract void initThisBoard();
-	/**
-	 * 본 Board가 paint되는 시점에서 component들의 기본 설정(사이즈 등)을 초기화해주는 매서드
-	 */
-	protected abstract void initComponents();
+	private void showScreens(){
+		boardAligner.followAlignProcess(this, screenList);
+	}
 	
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
+		
 		if(!isInitedAlready){
 			isInitedAlready = true;
-			this.initComponents();
+			
+			this.showScreens();
 		}
 	}
 }

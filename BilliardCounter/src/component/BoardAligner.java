@@ -14,10 +14,10 @@ public abstract class BoardAligner {
 	 * @param board  정렬이 필요한 Board
 	 * @param screenList  Board에 정렬해줘야할 Screen들을 가지고 있는 list
 	 */
-	protected void followAlignProcess(Board board, ScreenList screenList){
+	protected void followAlignProcess(Board board){
 		this.initBoardSize(board);
-		this.initScreenSize();
-		this.align(board, screenList);
+		this.initScreenSize(board);
+		this.align(board);
 	}
 	
 	/**
@@ -28,11 +28,11 @@ public abstract class BoardAligner {
 	/**
 	 * 초기화 되어있는 Board의 사이즈를 통해 screenSize를 초기화해주는 매서드
 	 */
-	protected abstract void initScreenSize();
+	protected abstract void initScreenSize(Board board);
 	/**
 	 * Board에 Screen들을 정렬해주는 매서드
 	 * @param board		정렬이 필요한 Board
 	 * @param screenList	Board에 정렬해줘야할 Screen들을 가지고 있는 List
 	 */
-	protected abstract void align(Board board, ScreenList screenList);
+	protected abstract void align(Board board);
 }

@@ -48,6 +48,15 @@ public abstract class Board extends JPanel{
 	public Screen getScreen(int row, int col){
 		return SCREEN[row][col];
 	}
+	/**
+	 * 해당 숫자가 이미 사용중인 ScreenNumber인지 확인해주는 매서드
+	 * @param number  확인하고자 하는 숫자
+	 * @return 이미 사용중인 숫자면 true를 리턴, 사용중이지 않으면 false를 리턴
+	 */
+	public boolean getIsNumberUsedAlready(int number){
+		return IS_NUMBER_USED_ALREADY[number];
+	}
+	
 	
 	/**
 	 * 현 Board에 포함되어있는 screen들을 보여주는 매서드
@@ -71,6 +80,10 @@ public abstract class Board extends JPanel{
 	 * 현 Board를 초기화해주는 매서드
 	 */
 	protected abstract void initThisBoard();
+	/**
+	 * 현 Board에 포함되는 Screen들을 초기화해준다.
+	 */
+	protected abstract void initScreens();
 	/**
 	 * boardAligner를 초기화 시켜주는 매서드
 	 * @param boardAligner boardAligner에 대입할 값

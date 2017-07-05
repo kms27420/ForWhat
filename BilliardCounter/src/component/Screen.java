@@ -11,7 +11,7 @@ import javax.swing.JPanel;
  */
 public abstract class Screen extends JPanel{
 	private int screenNumber;	// 현재 스크린의 번호, 스크린의 번호가 필요한 경우 사용된다.
-	private boolean isInitedAlready;		// paint가 처음 될때 initComponent를 해주었는가를 판단하는 boolean변수
+	private boolean isItFirstPaint = true;		// paint가 처음되었을 때를 판단하는 boolean 변수
 	/**
 	 * screenNumber를 설정해주는 매서드
 	 * @param screenNumber  screenNumber에 대입될 값
@@ -47,8 +47,8 @@ public abstract class Screen extends JPanel{
 	@Override
 	public void paint(Graphics g){
 		super.paint(g);
-		if(!isInitedAlready){
-			isInitedAlready = true;
+		if(isItFirstPaint){
+			isItFirstPaint = false;
 			this.initComponents();
 		}
 	}

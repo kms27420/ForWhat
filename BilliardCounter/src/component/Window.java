@@ -10,7 +10,7 @@ import javax.swing.JFrame;
  *
  */
 public abstract class Window extends JFrame{
-	private boolean isInitedAlready;		// paint가 처음 될때 initComponent를 해주었는가를 판단하는 boolean변수
+	private boolean isItFirstPaint = true;		// paint가 처음되었을 때를 판단하는 boolean 변수
 	
 	/**
 	 * 본 Window의 기본 설정(layout, background 등)을 초기화시켜주는 매서드
@@ -29,8 +29,8 @@ public abstract class Window extends JFrame{
 	public void paint(Graphics g){
 		super.paint(g);
 		
-		if(!isInitedAlready){
-			isInitedAlready = true;
+		if(isItFirstPaint){
+			isItFirstPaint = false;
 			this.initComponents();
 		}
 	}

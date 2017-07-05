@@ -14,10 +14,16 @@ public abstract class Board extends JPanel{
 	private final int MAX_COL;			// 현 Board에 생성할 Screen들의 최대 행
 	protected final Screen[][] SCREEN;	// 현 Board에 생성할 Screen들을 담을 변수
 	protected final boolean[] IS_NUMBER_USED_ALREADY;	// 현 Board에 생성할 Screen들에 부여될 ScreenNumber가 이미 사용된 것인지 판단하는 boolean변수
+	
 	protected BoardAligner boardAligner;	// 현 Board에 Screen들을 정렬시켜줄 인스턴스
 	
 	private boolean isItFirstPaint = true;		// paint가 처음되었을 때를 판단하는 boolean 변수
 	
+	/**
+	 * Board의 상수변수들을 초기화해준다.
+	 * @param row  MAX_ROW에 대입할 값
+	 * @param col  MAX_COL에 대입할 값
+	 */
 	public Board(int row, int col){
 		MAX_ROW = row;
 		MAX_COL = col;
@@ -59,7 +65,7 @@ public abstract class Board extends JPanel{
 	
 	
 	/**
-	 * 현 Board에 포함되어있는 screen들을 보여주는 매서드
+	 * 현 Board에 포함되어있는 screen들을 보여주는 매서드, paint 시점에 호출되는 매서드이다.
 	 */
 	private void showScreens(){
 		boardAligner.followAlignProcess(this);

@@ -1,11 +1,11 @@
-package billiardCounterAppearance;
+package initialScreen;
 
 import java.awt.Color;
 import java.awt.Graphics;
 
 import javax.swing.JScrollPane;
 
-import tableStatusScreenControl.TableStatusBoard;
+import tableBoardComponents.TableBoard;
 
 /**
  * 
@@ -14,11 +14,11 @@ import tableStatusScreenControl.TableStatusBoard;
  * @author Kwon
  *
  */
-public class BilliardCounterResultScreen extends JScrollPane{
-	private final TableStatusBoard TABLE_STATUS_SCREEN_BORARD = new TableStatusBoard();	// TableStatusScreen을 담고 있는 Board
+public class MainScreen extends JScrollPane{
+	private final TableBoard TABLE_STATUS_SCREEN_BORARD = new TableBoard();	// TableStatusScreen을 담고 있는 Board
 	private boolean isInitedAlready;
 	
-	public BilliardCounterResultScreen() {
+	public MainScreen() {
 		this.initThisScreen();
 		this.addComponents();
 	}

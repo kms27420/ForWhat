@@ -1,13 +1,11 @@
-package billiardCounterAppearance;
+package initialScreen;
 
 import java.awt.Color;
-import java.awt.Graphics;
 
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 
-import component.ImageIconFactory;
-import component.Screen;
+import components.ImageIconFactory;
+import components.Screen;
 
 /**
  * 
@@ -16,21 +14,20 @@ import component.Screen;
  * @author Kwon
  *
  */
-public class BilliardCounterNameBanner extends Screen{
+public class MainMenuScreen extends Screen{
 	private final JLabel IMAGE_LABEL = new JLabel(ImageIconFactory.makeImageIcon("src\\resource\\","BilliardTitle.png"));	// 프로그램 명 이미지 라벨
 	
-	public BilliardCounterNameBanner(){
-		this.initThisScreen();
+	public MainMenuScreen(){
+		this.initProperties();
 		this.addComponents();
 	}
-	
 	@Override
-	protected void initThisScreen() {
+	protected void initProperties() {
 		this.setLayout(null);
 		this.setBackground(new Color(0xDDFF00));
 	}
 	@Override
-	protected void initComponents() {
+	protected void initComponentsProperties() {
 		int width, height, x, y;
 		width = this.getWidth() / 3;
 		height = this.getHeight();
@@ -42,9 +39,5 @@ public class BilliardCounterNameBanner extends Screen{
 	@Override
 	protected void addComponents() {
 		this.add(IMAGE_LABEL);
-	}
-	@Override
-	protected void updateComponents() {
-		
 	}
 }

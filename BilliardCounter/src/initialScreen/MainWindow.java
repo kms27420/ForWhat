@@ -1,12 +1,9 @@
-package billiardCounterAppearance;
+package initialScreen;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Toolkit;
 
-import javax.swing.JFrame;
-
-import component.Window;
+import components.Window;
 
 /**
  * 
@@ -17,23 +14,23 @@ import component.Window;
  * @author Kwon
  *
  */
-public class BilliardCounterWindow extends Window{
-	private final BilliardCounterNameBanner TITLE_IMAGE_BANNER = new BilliardCounterNameBanner();	// 프로그램 명을 담고 있는 ImageBanner
-	private final BilliardCounterResultScreen RESULT_SCREEN = new BilliardCounterResultScreen();				// 프로그램 내용을 담고 있는 Screen
+public class MainWindow extends Window{
+	private final MainMenuScreen TITLE_IMAGE_BANNER = new MainMenuScreen();	// 프로그램 명을 담고 있는 ImageBanner
+	private final MainScreen RESULT_SCREEN = new MainScreen();				// 프로그램 내용을 담고 있는 Screen
 		
-	public BilliardCounterWindow(){
-		this.initThisWindow();
+	public MainWindow(){
+		this.initProperties();
+		this.addComponents();
 	}
 	
 	@Override
-	protected void initThisWindow() {
+	protected void initProperties() {
 		Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		this.setBounds(0, 0, windowSize.width, windowSize.height - 50);
 		this.setLayout(null);
 		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
-		this.addComponents();
 		this.setVisible(true);
 	}
 	@Override
@@ -42,14 +39,14 @@ public class BilliardCounterWindow extends Window{
 		this.add(RESULT_SCREEN);
 	}
 	@Override
-	protected void initComponents() {
+	protected void initComponentsProperties() {
 		int titleX, titleY, resultX, resultY;
 		int titleWidth, titleHeight, resultWidth, resultHeight;
 		
 		titleX = titleY = resultX = 0;
-		titleWidth = resultWidth = this.getWidth();
-		titleHeight = resultY = this.getHeight() / 5;
-		resultHeight = this.getHeight() * 4 / 5;
+		titleWidth = resultWidth = this.getContentPane().getSize().width;
+		titleHeight = resultY = this.getContentPane().getSize().height / 5;
+		resultHeight = this.getContentPane().getSize().height * 4 / 5;
 		
 		TITLE_IMAGE_BANNER.setBounds(titleX, titleY, titleWidth, titleHeight);
 		RESULT_SCREEN.setSize(new Dimension(resultWidth, resultHeight));

@@ -1,6 +1,6 @@
 package execution; 
 
-import billiardCounterAppearance.BilliardCounterWindow;
+import initialScreen.MainWindow;
 
 /**
  * 
@@ -10,6 +10,6 @@ import billiardCounterAppearance.BilliardCounterWindow;
  */
 public class Execution {
 	public static void main(String[] args) {
-		new BilliardCounterWindow();
+		new MainWindow();
 	}
 }

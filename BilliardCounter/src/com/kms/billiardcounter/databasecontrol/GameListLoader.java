@@ -5,7 +5,7 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.kms.billiardcounter.controllabledata.GameFeeInfo;
+import com.kms.billiardcounter.programdatacollection.GameFeeInfo;
 
 /**
  * 

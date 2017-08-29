@@ -3,7 +3,7 @@ package com.kms.billiardcounter.databasecontrol;
 import java.sql.Connection;
 import java.sql.Statement;
 
-import com.kms.billiardcounter.controllabledata.GameFeeInfo;
+import com.kms.billiardcounter.programdatacollection.GameFeeInfo;
 
 /**
  * 

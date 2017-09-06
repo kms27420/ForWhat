@@ -1,6 +1,8 @@
 package com.kms.billiardcounter.execution; 
 
-import com.kms.billiardcounter.billiardcounterframe.BilliardCounterFrame;
+import com.kms.billiardcounter.core.ancillaryframe.BaseFeeSettingFrame;
+import com.kms.billiardcounter.core.mainframe.BilliardCounterFrame;
+import com.kms.billiardcounter.dao.basefee.BaseFeeLoader;
 
 /**
  * 
@@ -15,5 +17,12 @@ public class Execution {
 		
 		new BilliardCounterFrame();
 		
+		if( !BaseFeeLoader.isBaseFeeInited() ) {
+			
+			new BaseFeeSettingFrame();
+			
+		}
+		
 	}
+	
 }

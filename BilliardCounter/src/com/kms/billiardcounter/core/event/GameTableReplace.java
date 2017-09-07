@@ -1,7 +1,19 @@
 package com.kms.billiardcounter.core.event;
 
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import java.awt.Toolkit;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
 import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
+import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
 import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
+import com.kms.billiardcounter.font.FontProvider;
 
 /**
  * 
@@ -15,10 +27,60 @@ public class GameTableReplace {
 	private static ContentsPaneUpdater contentsPaneUpdater;
 	
 	private static boolean isEnabled = false;
-	private static int replaceFromThisTableNumber;
-	private static int replaceToThisTableNumber;
+	private static int replaceFromThisTableNumber = 0;
+	private static int replaceToThisTableNumber = 0;
 	
 	private GameTableReplace() {}
+	
+	private static final boolean isThereReplacableTable() {
+		
+		try {
+			
+			Connection conn = BilliardCounterConnector.getConnection();
+			Statement stmt = conn.createStatement();
+			String sql = "SELECT COUNT( TABLE_NUMBER ) AS COUNT_OF_CREATED_TABLE "
+					+ "FROM billiard_counter.CREATED_TABLE_INFO;";
+			
+			ResultSet rs = stmt.executeQuery( sql );
+			
+			int countOfCreatedTable = 0;
+			int countOfNonPaidTable = 0;
+			
+			while( rs.next() ) {
+				
+				countOfCreatedTable = rs.getInt( "COUNT_OF_CREATED_TABLE" );
+				
+			}
+			
+			sql = "SELECT COUNT( DISTINCT TABLE_NUMBER ) AS COUNT_OF_NON_PAID_TABLE "
+					+ "FROM billiard_counter.GAME_LIST "
+					+ "WHERE IS_PAID = FALSE;";
+			
+			rs = stmt.executeQuery( sql );
+			
+			while( rs.next() ) {
+				
+				countOfNonPaidTable = rs.getInt( "COUNT_OF_NON_PAID_TABLE" );
+				
+			}
+			
+			rs.close();
+			stmt.close();
+			conn.close();
+			
+			if( countOfCreatedTable == countOfNonPaidTable )	return false;
+			
+			return true;
+			
+		} catch( Exception e ) {
+			
+			e.printStackTrace();
+			
+			return false;
+			
+		}
+		
+	}
 	
 	/**
 	 * 
@@ -50,7 +112,7 @@ public class GameTableReplace {
 		
 			contentsPaneUpdater.update();
 		
-		}
+		} 
 		
 	}
 	
@@ -62,10 +124,37 @@ public class GameTableReplace {
 	 */
 	public static final void activateReplacementWork( int tableNumber ) {
 		
-		replaceFromThisTableNumber = tableNumber;
-		isEnabled = true;
+		if( isThereReplacableTable() ) {
+			
+			replaceFromThisTableNumber = tableNumber;
+			isEnabled = true;
 		
-		contentsPaneUpdater.update();
+			contentsPaneUpdater.update();
+		
+		} else {
+			
+			Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+			Dimension frameSize = new Dimension( 400, 200 );
+			
+			JFrame alertFrame = new JFrame( "자리 이동 실패" );
+			
+			JLabel alertLabel = new JLabel( "모든 당구대가 사용중입니다." );
+			
+			alertLabel.setHorizontalAlignment( JLabel.CENTER );
+			alertLabel.setFont( FontProvider.getDefaultFont() );
+			
+			alertFrame.setLayout( new GridLayout( 1, 1 ) );
+			alertFrame.setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
+			alertFrame.setSize( frameSize );
+			alertFrame.setResizable( false );
+			
+			alertFrame.setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
+			
+			alertFrame.add( alertLabel );
+			
+			alertFrame.setVisible( true );
+			
+		}
 		
 	}
 	

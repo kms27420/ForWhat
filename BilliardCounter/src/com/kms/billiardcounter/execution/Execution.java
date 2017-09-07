@@ -1,8 +1,6 @@
-package com.kms.billiardcounter.execution; 
+package com.kms.billiardcounter.execution;
 
-import com.kms.billiardcounter.core.ancillaryframe.BaseFeeSettingFrame;
-import com.kms.billiardcounter.core.mainframe.BilliardCounterFrame;
-import com.kms.billiardcounter.dao.basefee.BaseFeeLoader;
+import com.kms.billiardcounter.core.ancillaryframe.LoginFrame;
 
 /**
  * 
@@ -15,13 +13,7 @@ public class Execution {
 	
 	public static void main(String[] args) {
 		
-		new BilliardCounterFrame();
-		
-		if( !BaseFeeLoader.isBaseFeeInited() ) {
-			
-			new BaseFeeSettingFrame();
-			
-		}
+		new LoginFrame();
 		
 	}
 	

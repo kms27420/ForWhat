@@ -26,7 +26,7 @@ public class DayTotalSalesFrame extends JFrame {
 		
 		initThisFrame();
 		
-		add( createDayTotalSalesPanel() );
+		add( createDayTotalSalesPanel() ); 
 		
 	}
 	

@@ -18,6 +18,8 @@ public class GameTableReplace {
 	private static int replaceFromThisTableNumber;
 	private static int replaceToThisTableNumber;
 	
+	private GameTableReplace() {}
+	
 	/**
 	 * 
 	 * contentsPaneUpdater를 설정해주는 매서드

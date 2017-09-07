@@ -14,6 +14,8 @@ import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
  */
 public class BaseFeeTableUpdater {
 
+	private BaseFeeTableUpdater() {}
+	
 	private static void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
 		
 		stmt.execute(

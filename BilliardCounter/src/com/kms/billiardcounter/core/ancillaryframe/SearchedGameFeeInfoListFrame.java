@@ -38,6 +38,8 @@ public class SearchedGameFeeInfoListFrame extends JFrame {
 		
 		add( createSearchedGameFeeInfoListScrollPane( searchedGameFeeInfoList ) );
 		
+		setVisible( true );
+		
 	}
 	
 	private void initThisFrame() {
@@ -48,8 +50,6 @@ public class SearchedGameFeeInfoListFrame extends JFrame {
 		setResizable( false );
 		
 		setDefaultCloseOperation( JFrame.DISPOSE_ON_CLOSE );
-		
-		setVisible( true );
 		
 	}
 	

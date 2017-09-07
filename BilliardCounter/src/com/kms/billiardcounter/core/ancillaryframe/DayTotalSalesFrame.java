@@ -28,6 +28,8 @@ public class DayTotalSalesFrame extends JFrame {
 		
 		add( createDayTotalSalesPanel() ); 
 		
+		setVisible( true );
+		
 	}
 	
 	private void initThisFrame() {
@@ -41,8 +43,6 @@ public class DayTotalSalesFrame extends JFrame {
 		setLayout( new GridLayout( 1, 1 ) );
 		
 		setDefaultCloseOperation( DISPOSE_ON_CLOSE );
-		
-		setVisible( true );
 		
 	}
 	

@@ -36,6 +36,8 @@ public class BaseFeeSettingFrame extends JFrame{
 		repaint();
 		revalidate();
 		
+		setVisible( true );
+		
 	}
 	
 	private void initThisFrame() {
@@ -49,8 +51,6 @@ public class BaseFeeSettingFrame extends JFrame{
 		setLayout( new GridLayout( 1, 1 ) );
 		
 		setDefaultCloseOperation( DISPOSE_ON_CLOSE );
-		
-		setVisible( true );
 		
 		if( !BaseFeeLoader.isBaseFeeInited() ) {
 			

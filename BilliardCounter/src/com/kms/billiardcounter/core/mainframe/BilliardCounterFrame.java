@@ -31,6 +31,8 @@ public class BilliardCounterFrame extends JFrame{
 		repaint();
 		revalidate();
 		
+		setVisible( true );
+		
 	}
 	
 	private void initThisFrame() {
@@ -44,8 +46,6 @@ public class BilliardCounterFrame extends JFrame{
 		setLayout( new BorderLayout() );
 		setResizable( false );
 		setDefaultCloseOperation( EXIT_ON_CLOSE );
-		
-		setVisible( true );
 		
 	}
 	

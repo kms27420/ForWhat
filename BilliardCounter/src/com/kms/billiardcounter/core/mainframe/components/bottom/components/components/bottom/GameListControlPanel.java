@@ -17,6 +17,8 @@ import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
 import com.kms.billiardcounter.core.event.GameTableReplace;
 import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
 import com.kms.billiardcounter.dao.nonpaidgames.NonPaidGamesLoader;
+import com.kms.billiardcounter.dao.usingtable.UsingTableLoader;
+import com.kms.billiardcounter.dao.usingtable.UsingTableUpdater;
 import com.kms.billiardcounter.font.FontProvider;
 import com.kms.billiardcounter.support.GameFeeInfo;
 
@@ -57,8 +59,6 @@ public class GameListControlPanel extends JPanel {
 		ArrayList<GameFeeInfo> gameList = NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber );
 		ArrayList<JLabel> gameLabelList = new ArrayList<JLabel>();
 		
-		JButton changeTablePositionButton = new JButton();
-		
 		Dimension gameLabelSize = new Dimension( 0, 50 );
 		
 		String usedTime;
@@ -86,7 +86,10 @@ public class GameListControlPanel extends JPanel {
 		
 			if( GameTableReplace.getIsEnabled() && tableNumber > 0 ) {
 				
+				JButton changeTablePositionButton = new JButton();
+				
 				changeTablePositionButton.setText( "이곳으로 옮기기" );
+				changeTablePositionButton.setFont( FontProvider.getDefaultFont() );
 				changeTablePositionButton.addActionListener( new ActionListener() {
 					
 					@Override
@@ -100,7 +103,7 @@ public class GameListControlPanel extends JPanel {
 				
 				gameListPanel.add( changeTablePositionButton );
 				
-			} else {
+			} else if( tableNumber > 0 ) {
 			
 				JLabel gameLabel = new JLabel( "게임 없음" );
 			
@@ -109,6 +112,15 @@ public class GameListControlPanel extends JPanel {
 			
 				gameListPanel.add( gameLabel );
 			
+			} else {
+				
+				JLabel gameLabel = new JLabel( "테이블 없음" );
+				
+				gameLabel.setFont( FontProvider.getDefaultFont() );
+				gameLabel.setHorizontalAlignment( JLabel.CENTER );
+			
+				gameListPanel.add( gameLabel );
+				
 			}
 		
 		} else {
@@ -121,25 +133,49 @@ public class GameListControlPanel extends JPanel {
 		
 			if( !GameTableReplace.getIsEnabled() ) {
 			
+				JButton changeTablePositionButton = new JButton();
+					
 				changeTablePositionButton.setText( "자리 옮기기" );
+				changeTablePositionButton.setFont( FontProvider.getDefaultFont() );
 				changeTablePositionButton.addActionListener( new ActionListener() {
 				
 					@Override
 					public void actionPerformed(ActionEvent e) {
 
 						GameTableReplace.activateReplacementWork( tableNumber );
-					
+						
 					}
-					
+						
 				} );
 			
 				gameListPanel.add( changeTablePositionButton );
-		
+					
+			} else {
+				
+				if( GameTableReplace.getActivatedTableNumber() == tableNumber ){
+					
+					JButton disactivateReplacementWorkButton = new JButton();
+					
+					disactivateReplacementWorkButton.setText( "자리 옮기기 취소" );
+					disactivateReplacementWorkButton.setFont( FontProvider.getDefaultFont() );
+					disactivateReplacementWorkButton.addActionListener( new ActionListener() {
+						
+						@Override
+						public void actionPerformed(ActionEvent e) {
+
+							GameTableReplace.disactivateReplacementWork();
+							
+						}
+						
+					} );
+					
+					gameListPanel.add( disactivateReplacementWorkButton );
+					
+				} 
+				
 			}
 		
 		}
-		
-		changeTablePositionButton.setFont( FontProvider.getDefaultFont() );
 		
 		gameListScrollPane.setViewportView( gameListPanel );
 		gameListScrollPane.setPreferredSize( new Dimension( 0, 200 ) );
@@ -196,15 +232,21 @@ public class GameListControlPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					
-					GameListTableUpdater.updateIsPaidToTrue( tableNumber );
-					
-					GameListControlPanel.this.removeAll();
-					
-					GameListControlPanel.this.add( createTableGameControlPanel( tableNumber, contentsPaneUpdater ), BorderLayout.SOUTH );
-					GameListControlPanel.this.add( createGameListScrollPane( tableNumber ), BorderLayout.CENTER );
-				
-					GameListControlPanel.this.repaint();
-					GameListControlPanel.this.revalidate();
+					if( GameListTableUpdater.updateIsPaidToTrue( tableNumber ) ) {
+						
+						if( UsingTableUpdater.deleteUsingTable( tableNumber ) ) {
+							
+							GameListControlPanel.this.removeAll();
+							
+							GameListControlPanel.this.add( createTableGameControlPanel( tableNumber, contentsPaneUpdater ), BorderLayout.SOUTH );
+							GameListControlPanel.this.add( createGameListScrollPane( tableNumber ), BorderLayout.CENTER );
+						
+							GameListControlPanel.this.repaint();
+							GameListControlPanel.this.revalidate();
+							
+						}
+						
+					}
 					
 				}
 				
@@ -215,7 +257,19 @@ public class GameListControlPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 
-					contentsPaneUpdater.update();
+					if( UsingTableLoader.isThisTableInUse( tableNumber ) ) {
+						
+						contentsPaneUpdater.update();
+					
+					} else {
+						
+						if( UsingTableUpdater.saveUsingTable( tableNumber ) ) {	
+							
+							contentsPaneUpdater.update();
+					
+						}
+						
+					}
 					
 				}
 				

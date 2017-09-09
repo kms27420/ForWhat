@@ -45,8 +45,7 @@ public class BilliardTableNumberControlPanel extends JPanel {
 			
 			thisContentsPanel = createGameTableNumberCreatePanel( tableNumber, row, col, contentsPaneUpdater );
 			
-		}
-		else{
+		} else{
 			
 			thisContentsPanel = createGameTableNumberViewerPanel( tableNumber );
 			

@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 import javax.swing.border.BevelBorder;
 
 import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
+import com.kms.billiardcounter.core.event.GameTableReplace;
 import com.kms.billiardcounter.core.mainframe.components.bottom.components.components.bottom.GameListControlPanel;
 import com.kms.billiardcounter.core.mainframe.components.bottom.components.components.bottom.PlayingScreenPanel;
 import com.kms.billiardcounter.core.mainframe.components.bottom.components.components.top.BilliardTableNumberControlPanel;

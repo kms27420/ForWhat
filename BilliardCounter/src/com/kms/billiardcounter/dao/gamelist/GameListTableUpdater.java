@@ -127,7 +127,7 @@ public class GameListTableUpdater {
 	 * @param afterTableNumber 이 번호로 table_number을 변경함
 	 * @return update가 제대로 실행되면 true, 그렇지 않으면 false
 	 */
-	public static final boolean updateNonPaidGamesTableNumber( int beforeTableNumber, int afterTableNumber ) {
+	public static final boolean replaceNonPaidGamesTableNumber( int beforeTableNumber, int afterTableNumber ) {
 		
 		try {
 			

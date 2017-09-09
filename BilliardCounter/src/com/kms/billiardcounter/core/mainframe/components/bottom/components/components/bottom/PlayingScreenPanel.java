@@ -28,20 +28,29 @@ import com.kms.billiardcounter.support.GameFeeInfo;
 
 public class PlayingScreenPanel extends JPanel {
 	
+	private final FeeCalculator CALCULATOR = new FeeCalculator();
+	
 	public PlayingScreenPanel( int tableNumber, ContentsPaneUpdater contentsPaneUpdater ){
 		
 		initThisPanel();
 		
-		add( createFeeInfoControlPanel( tableNumber, contentsPaneUpdater ) );
+		JLabel[] usedTimeAndFeeLabels = createUsedTimeAndFeeLabels();
+		
+		add( usedTimeAndFeeLabels[0] );
+		add( usedTimeAndFeeLabels[1] );
+		add( createGameEndButton( tableNumber, contentsPaneUpdater ) );
 		
 		repaint();
 		revalidate();
+		
+		CALCULATOR.start();
 		
 	}
 	
 	private void initThisPanel(){
 		
-		setLayout( new GridLayout(1, 1) );
+		setBorder( new BevelBorder( BevelBorder.RAISED ) );
+		setLayout( new GridLayout( 3, 1 ) );
 		
 	}
 	
@@ -57,22 +66,20 @@ public class PlayingScreenPanel extends JPanel {
 		private int usedTime = 0;
 		private int fee = BASE_FEE_PER_MINUTE * BASE_FEE_TIME;
 		
-		private ContentsPaneUpdater contentsPaneUpdater = null;
+		private ContentsPaneUpdater usedTimeAndFeeLabelUpdater = null;
 		
-		private void setContentsPaneUpdater( ContentsPaneUpdater contentsPaneUpdater ){
+		private void setUsedTimeAndFeeLabelUpdater( ContentsPaneUpdater usedTimeAndFeeLabelUpdater ){
 			
-			this.contentsPaneUpdater = contentsPaneUpdater;
+			this.usedTimeAndFeeLabelUpdater = usedTimeAndFeeLabelUpdater;
 			
 		}
 		
 		public void run(){
 			
-			SimpleDateFormat sdf = new SimpleDateFormat( "yyMMdd HH:mm:ss" );
+			String dateAndStartTime = new SimpleDateFormat( "yyMMdd HH:mm:ss" ).format( new Date() );
 			
-			date = sdf.format( new Date() ).substring( 0, 6 );
-			startTime = sdf.format( new Date() ).substring( 7 );
-			
-			sdf = new SimpleDateFormat("HH:mm:ss");
+			date = dateAndStartTime.substring( 0, 6 );
+			startTime = dateAndStartTime.substring( 7 );
 			
 			while(true){
 				
@@ -88,7 +95,7 @@ public class PlayingScreenPanel extends JPanel {
 						
 					}
 					
-					contentsPaneUpdater.update();
+					usedTimeAndFeeLabelUpdater.update();
 					
 				}catch( InterruptedException e ) { 
 				
@@ -104,34 +111,39 @@ public class PlayingScreenPanel extends JPanel {
 		
 	}
 	
-	private JPanel createFeeInfoControlPanel( int tableNumber, ContentsPaneUpdater contentsPaneUpdater ){
+	private JLabel[] createUsedTimeAndFeeLabels() {
 		
-		JPanel feeInfoControlPanel = new JPanel();
+		JLabel[] usedTimeAndFeeLabels = new JLabel[2];
 		
-		JLabel usedTimeLabel = new JLabel( "사용 시간  00:00" );
-		JLabel feeLabel = new JLabel();
+		usedTimeAndFeeLabels[0] = new JLabel( "사용 시간  00:00" );
 		
-		JButton gameEndButton = new JButton( "게임 종료" );
+		usedTimeAndFeeLabels[0].setFont( FontProvider.getDefaultFont() );
+		usedTimeAndFeeLabels[0].setHorizontalAlignment( JLabel.CENTER );
 		
-		FeeCalculator calculator = new FeeCalculator();
+		usedTimeAndFeeLabels[1] = new JLabel();
 		
-		calculator.setContentsPaneUpdater( new ContentsPaneUpdater(){
+		usedTimeAndFeeLabels[1].setText( "요금 : " + CALCULATOR.BASE_FEE_PER_MINUTE * CALCULATOR.BASE_FEE_TIME + "원" );
+		usedTimeAndFeeLabels[1].setFont( FontProvider.getDefaultFont() );
+		usedTimeAndFeeLabels[1].setHorizontalAlignment( JLabel.CENTER );
+
+		CALCULATOR.setUsedTimeAndFeeLabelUpdater( new ContentsPaneUpdater(){
 			
 			public void update(){
 				
-				usedTimeLabel.setText( "사용 시간  " + String.format( "%02d", calculator.usedTime / 60 ) + ":" + String.format( "%02d", calculator.usedTime % 60 ) );
-				feeLabel.setText( "요금 : " + calculator.fee + "원" );
+				usedTimeAndFeeLabels[0].setText( "사용 시간  " + String.format( "%02d", CALCULATOR.usedTime / 60 ) + ":" + String.format( "%02d", CALCULATOR.usedTime % 60 ) );
+				usedTimeAndFeeLabels[1].setText( "요금 : " + CALCULATOR.fee + "원" );
 				
 			}
 			
 		} );
+
+		return usedTimeAndFeeLabels;
 		
-		usedTimeLabel.setFont( FontProvider.getDefaultFont() );
-		usedTimeLabel.setHorizontalAlignment( JLabel.CENTER );
+	}
+	
+	private JButton createGameEndButton( int tableNumber, ContentsPaneUpdater contentsPaneUpdater ) {
 		
-		feeLabel.setText( "요금 : " + calculator.BASE_FEE_PER_MINUTE * calculator.BASE_FEE_TIME + "원" );
-		feeLabel.setFont( FontProvider.getDefaultFont() );
-		feeLabel.setHorizontalAlignment( JLabel.CENTER );
+		JButton gameEndButton = new JButton( "게임 종료" );
 		
 		gameEndButton.setFont( FontProvider.getDefaultFont() );
 		gameEndButton.addActionListener( new ActionListener() {
@@ -141,15 +153,15 @@ public class PlayingScreenPanel extends JPanel {
 				
 				GameFeeInfo gameFeeInfo = new GameFeeInfo();
 				
-				calculator.interrupt();
+				CALCULATOR.interrupt();
 				
-				gameFeeInfo.setDate( calculator.date );
-				gameFeeInfo.setStartTime( calculator.startTime );
+				gameFeeInfo.setDate( CALCULATOR.date );
+				gameFeeInfo.setStartTime( CALCULATOR.startTime );
 				gameFeeInfo.setEndTime( new SimpleDateFormat( "HH:mm:ss" ).format( new Date() ) );
 				gameFeeInfo.setGameNumber( NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber ).size() + 1 );
 				gameFeeInfo.setTableNumber( tableNumber );
-				gameFeeInfo.setUsedTime( calculator.usedTime );
-				gameFeeInfo.setFee( calculator.fee );
+				gameFeeInfo.setUsedTime( CALCULATOR.usedTime );
+				gameFeeInfo.setFee( CALCULATOR.fee );
 				gameFeeInfo.setIsPaid( false );
 				
 				if( GameListTableUpdater.saveGameFeeInfoToDB( gameFeeInfo ) ){
@@ -162,16 +174,7 @@ public class PlayingScreenPanel extends JPanel {
 			
 		} );
 		
-		feeInfoControlPanel.setBorder( new BevelBorder( BevelBorder.RAISED ) );
-		feeInfoControlPanel.setLayout( new GridLayout(3, 1) );
-		
-		feeInfoControlPanel.add( usedTimeLabel );
-		feeInfoControlPanel.add( feeLabel );
-		feeInfoControlPanel.add( gameEndButton );
-		
-		calculator.start();
-		
-		return feeInfoControlPanel;
+		return gameEndButton;
 		
 	}
 	

@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
 import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
 import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
+import com.kms.billiardcounter.dao.usingtable.UsingTableLoader;
+import com.kms.billiardcounter.dao.usingtable.UsingTableUpdater;
 import com.kms.billiardcounter.font.FontProvider;
 
 /**
@@ -27,6 +29,7 @@ public class GameTableReplace {
 	private static ContentsPaneUpdater contentsPaneUpdater;
 	
 	private static boolean isEnabled = false;
+	
 	private static int replaceFromThisTableNumber = 0;
 	private static int replaceToThisTableNumber = 0;
 	
@@ -39,36 +42,25 @@ public class GameTableReplace {
 			Connection conn = BilliardCounterConnector.getConnection();
 			Statement stmt = conn.createStatement();
 			String sql = "SELECT COUNT( TABLE_NUMBER ) AS COUNT_OF_CREATED_TABLE "
-					+ "FROM billiard_counter.CREATED_TABLE_INFO;";
+					+ "FROM billiard_counter.CREATED_TABLE;";
 			
 			ResultSet rs = stmt.executeQuery( sql );
 			
 			int countOfCreatedTable = 0;
-			int countOfNonPaidTable = 0;
 			
 			while( rs.next() ) {
 				
 				countOfCreatedTable = rs.getInt( "COUNT_OF_CREATED_TABLE" );
 				
 			}
-			
-			sql = "SELECT COUNT( DISTINCT TABLE_NUMBER ) AS COUNT_OF_NON_PAID_TABLE "
-					+ "FROM billiard_counter.GAME_LIST "
-					+ "WHERE IS_PAID = FALSE;";
-			
-			rs = stmt.executeQuery( sql );
-			
-			while( rs.next() ) {
-				
-				countOfNonPaidTable = rs.getInt( "COUNT_OF_NON_PAID_TABLE" );
-				
-			}
+
+			int countOfUsingTable = UsingTableLoader.getCountOfUsingTable();
 			
 			rs.close();
 			stmt.close();
 			conn.close();
 			
-			if( countOfCreatedTable == countOfNonPaidTable )	return false;
+			if( countOfCreatedTable == countOfUsingTable )	return false;
 			
 			return true;
 			
@@ -104,14 +96,22 @@ public class GameTableReplace {
 		
 		replaceToThisTableNumber = tableNumber;
 		
-		if( GameListTableUpdater.updateNonPaidGamesTableNumber( replaceFromThisTableNumber, replaceToThisTableNumber ) ) {
+		if( GameListTableUpdater.replaceNonPaidGamesTableNumber( replaceFromThisTableNumber, replaceToThisTableNumber ) ) {
 		
-			isEnabled = false;
-			replaceFromThisTableNumber = 0;
-			replaceToThisTableNumber = 0;
-		
-			contentsPaneUpdater.update();
-		
+			if( UsingTableUpdater.deleteUsingTable( replaceFromThisTableNumber ) ) {
+				
+				if( UsingTableUpdater.saveUsingTable( replaceToThisTableNumber ) ) {
+					
+					isEnabled = false;
+					replaceFromThisTableNumber = 0;
+					replaceToThisTableNumber = 0;
+				
+					contentsPaneUpdater.update();
+					
+				}
+				
+			}
+			
 		} 
 		
 	}
@@ -160,6 +160,20 @@ public class GameTableReplace {
 	
 	/**
 	 * 
+	 * 당구대를 옮겨주기 위한 작업을 비활성화 시켜주는 매서드
+	 * 
+	 */
+	public static final void disactivateReplacementWork() {
+		
+		replaceFromThisTableNumber = 0;
+		isEnabled = false;
+	
+		contentsPaneUpdater.update();
+		
+	}
+	
+	/**
+	 * 
 	 * 본 클래스가 활성화 되었는지를 확인하는 변수 isEnabled의 값을 받아오는 매서드
 	 * 
 	 * @return isEnabled
@@ -167,6 +181,18 @@ public class GameTableReplace {
 	public static final boolean getIsEnabled() {
 		
 		return isEnabled;
+		
+	}
+	
+	/**
+	 * 
+	 * 본 클래스를 활성화 시켜준 테이블의 번호를 반환하는 매서드
+	 * 
+	 * @return replaceFromThisTableNumber
+	 */
+	public static final int getActivatedTableNumber() {
+		
+		return replaceFromThisTableNumber;
 		
 	}
 	

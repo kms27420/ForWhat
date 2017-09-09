@@ -19,7 +19,7 @@ public class TablePositionSaver {
 	private static final void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
 		
 		stmt.execute(
-				"CREATE TABLE IF NOT EXISTS billiard_counter.CREATED_TABLE_INFO("
+				"CREATE TABLE IF NOT EXISTS billiard_counter.CREATED_TABLE("
 				+ "TABLE_NUMBER INT(11) PRIMARY KEY NOT NULL,"
 				+ "TABLE_ROW INT(11) NOT NULL,"
 				+ "TABLE_COL INT(11) NOT NULL);"
@@ -37,7 +37,7 @@ public class TablePositionSaver {
 			
 			createTableIfNotExists( conn, stmt );
 			
-			sql = "INSERT INTO billiard_counter.CREATED_TABLE_INFO VALUES(" + tableNumber + ", " + row + ", " + col + ");";
+			sql = "INSERT INTO billiard_counter.CREATED_TABLE VALUES(" + tableNumber + ", " + row + ", " + col + ");";
 			stmt.executeUpdate(sql);
 			
 			stmt.close();

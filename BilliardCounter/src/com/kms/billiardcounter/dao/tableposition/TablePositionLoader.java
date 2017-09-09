@@ -31,7 +31,7 @@ public class TablePositionLoader {
 		try{
 			
 			String sql = "SELECT TABLE_NUMBER "
-					+ "FROM BILLIARD_COUNTER.CREATED_TABLE_INFO "
+					+ "FROM BILLIARD_COUNTER.CREATED_TABLE "
 					+ "WHERE TABLE_ROW = " + tableRow + " AND TABLE_COL = " + tableCol + ";";
 			
 			Connection conn = BilliardCounterConnector.getConnection();

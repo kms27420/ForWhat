@@ -84,9 +84,11 @@ public class LoginFrame extends JFrame {
 					
 					LoginFrame.this.dispose();
 					
-					new BilliardCounterFrame();
+					if( BaseFeeLoader.isBaseFeeInited() ) {
+						
+						new BilliardCounterFrame();
 					
-					if( !BaseFeeLoader.isBaseFeeInited() ) {
+					} else {
 						
 						new BaseFeeSettingFrame();
 						

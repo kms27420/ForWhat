@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
+import com.kms.billiardcounter.core.mainframe.BilliardCounterFrame;
 import com.kms.billiardcounter.core.string.NumericManufacturer;
 import com.kms.billiardcounter.dao.basefee.BaseFeeLoader;
 import com.kms.billiardcounter.dao.basefee.BaseFeeTableUpdater;
@@ -54,8 +56,7 @@ public class BaseFeeSettingFrame extends JFrame{
 		
 		if( !BaseFeeLoader.isBaseFeeInited() ) {
 			
-			setAlwaysOnTop( true );
-			setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
+			setDefaultCloseOperation( EXIT_ON_CLOSE );
 			
 		}
 		
@@ -109,10 +110,14 @@ public class BaseFeeSettingFrame extends JFrame{
 				int baseFeeTime = NumericManufacturer.getIntConsistingOnlyOfNumeric( baseFeeTimeTextField.getText() );
 				int feeIncreaseTime = NumericManufacturer.getIntConsistingOnlyOfNumeric( feeIncreaseTimeTextField.getText() );
 				
+				boolean isBaseFeeInited = BaseFeeLoader.isBaseFeeInited();
+				
 				if( BaseFeeTableUpdater.updateBaseFeeInfoToDB( baseFeePerMinute, baseFeeTime, feeIncreaseTime ) ) {
 				
 					BaseFeeSettingFrame.this.dispose();
-				
+					
+					if( !isBaseFeeInited )	new BilliardCounterFrame();
+					
 				}
 				
 			}

@@ -56,33 +56,33 @@ public class GameListControlPanel extends JPanel {
 		
 		JPanel gameListPanel = new JPanel();						
 		
-		ArrayList<GameFeeInfo> gameList = NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber );
-		ArrayList<JLabel> gameLabelList = new ArrayList<JLabel>();
+		ArrayList<GameFeeInfo> nonPaidGameFeeInfoList = NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber );
+		ArrayList<JLabel> nonPaidGameFeeInfoLabelList = new ArrayList<JLabel>();
 		
 		Dimension gameLabelSize = new Dimension( 0, 50 );
 		
 		String usedTime;
 		int gameNumber;
 		
-		for( int index = 0; index < gameList.size(); index++ ){
+		for( int index = 0; index < nonPaidGameFeeInfoList.size(); index++ ){
 			
-			usedTime = String.format( "%02d", gameList.get(index).getUsedTime() / 60) + ":" + String.format( "%02d", gameList.get(index).getUsedTime() % 60 );
-			gameNumber = gameList.get(index).getGameNumber();
+			usedTime = String.format( "%02d", nonPaidGameFeeInfoList.get(index).getUsedTime() / 60) + ":" + String.format( "%02d", nonPaidGameFeeInfoList.get(index).getUsedTime() % 60 );
+			gameNumber = nonPaidGameFeeInfoList.get(index).getGameNumber();
 			
-			JLabel gameLabel = new JLabel( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + gameList.get(index).getFee() + "원");
+			JLabel nonPaidGameFeeInfoLabel = new JLabel( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + nonPaidGameFeeInfoList.get(index).getFee() + "원");
 			
-			gameLabel.setFont( FontProvider.getDefaultFont() );
-			gameLabel.setHorizontalAlignment( JLabel.CENTER );
+			nonPaidGameFeeInfoLabel.setFont( FontProvider.getDefaultFont() );
+			nonPaidGameFeeInfoLabel.setHorizontalAlignment( JLabel.CENTER );
 			
-			gameLabelList.add( gameLabel );
+			nonPaidGameFeeInfoLabelList.add( nonPaidGameFeeInfoLabel );
 			
 		}
 		
-		gameListPanel.setPreferredSize( new Dimension( 0, gameLabelSize.height * ( gameList.size() + 1 ) ) );
+		gameListPanel.setPreferredSize( new Dimension( 0, gameLabelSize.height * ( nonPaidGameFeeInfoList.size() + 1 ) ) );
 		gameListPanel.setBorder( new BevelBorder( BevelBorder.RAISED ) );
-		gameListPanel.setLayout( new GridLayout( gameList.size() + 1, 1 ) );
+		gameListPanel.setLayout( new GridLayout( nonPaidGameFeeInfoList.size() + 1, 1 ) );
 		
-		if( gameLabelList.size() == 0 ){
+		if( nonPaidGameFeeInfoLabelList.size() == 0 ){
 		
 			if( GameTableReplace.getIsEnabled() && tableNumber > 0 ) {
 				
@@ -125,9 +125,9 @@ public class GameListControlPanel extends JPanel {
 		
 		} else {
 		
-			for( int index = 0; index < gameLabelList.size(); index++ ){
+			for( int index = 0; index < nonPaidGameFeeInfoLabelList.size(); index++ ){
 			
-				gameListPanel.add( gameLabelList.get(index) );
+				gameListPanel.add( nonPaidGameFeeInfoLabelList.get(index) );
 		
 			}
 		

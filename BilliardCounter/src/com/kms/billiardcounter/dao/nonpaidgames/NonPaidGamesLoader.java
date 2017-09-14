@@ -5,7 +5,10 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
+
 import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.font.FontProvider;
 import com.kms.billiardcounter.support.GameFeeInfo;
 
 /**
@@ -29,7 +32,7 @@ public class NonPaidGamesLoader {
 	 */
 	public static final ArrayList<GameFeeInfo> getNonPaidGameFeeInfoList( int tableNumber ){
 		
-		ArrayList<GameFeeInfo> gameList = new ArrayList<GameFeeInfo>();
+		ArrayList<GameFeeInfo> nonPaidGameFeeInfoList = new ArrayList<GameFeeInfo>();
 		
 		try{
 			
@@ -54,7 +57,7 @@ public class NonPaidGamesLoader {
 				tmpInfo.setFee( rs.getInt( "FEE" ) );
 				tmpInfo.setIsPaid( rs.getBoolean( "IS_PAID" ) );
 				
-				gameList.add( tmpInfo );
+				nonPaidGameFeeInfoList.add( tmpInfo );
 				
 			}	
 			
@@ -68,7 +71,40 @@ public class NonPaidGamesLoader {
 			
 		}
 		
-		return gameList;
+		return nonPaidGameFeeInfoList;
+		
+	}
+	
+	/**
+	 * 
+	 * tableNumber에 해당하며 아직 계산되지 않은 게임 리스트의 game_number, used_time, fee를 출력하는 label의 리스트를 반환해주는 매서드
+	 * 
+	 * @param tableNumber 찾고자 하는 당구대의 번호
+	 * @return ArrayList<JLabel> nonPaidGameFeeInfoLabelList, 게임 리스트의 정보를 출력하는 label의 리스트
+	 */
+	public static final ArrayList<JLabel> getNonPaidGameFeeInfoLabelList( int tableNumber ) {
+		
+		ArrayList<JLabel> nonPaidGameFeeInfoLabelList = new ArrayList<JLabel>();
+		ArrayList<GameFeeInfo> nonPaidGameFeeInfoList = getNonPaidGameFeeInfoList( tableNumber );
+		
+		String usedTime;
+		int gameNumber;
+		
+		for( int index = 0; index < nonPaidGameFeeInfoList.size(); index++ ) {
+			
+			usedTime = String.format( "%02d", nonPaidGameFeeInfoList.get(index).getUsedTime() / 60) + ":" + String.format( "%02d", nonPaidGameFeeInfoList.get(index).getUsedTime() % 60 );
+			gameNumber = nonPaidGameFeeInfoList.get(index).getGameNumber();
+			
+			JLabel nonPaidGameFeeInfoLabel = new JLabel( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + nonPaidGameFeeInfoList.get(index).getFee() + "원");
+			
+			nonPaidGameFeeInfoLabel.setFont( FontProvider.getDefaultFont() );
+			nonPaidGameFeeInfoLabel.setHorizontalAlignment( JLabel.CENTER );
+			
+			nonPaidGameFeeInfoLabelList.add( nonPaidGameFeeInfoLabel );
+			
+		}
+		
+		return nonPaidGameFeeInfoLabelList;
 		
 	}
 	

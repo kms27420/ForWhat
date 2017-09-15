@@ -20,7 +20,7 @@ import com.kms.billiardcounter.dao.nonpaidgames.NonPaidGamesLoader;
 import com.kms.billiardcounter.dao.usingtable.UsingTableLoader;
 import com.kms.billiardcounter.dao.usingtable.UsingTableUpdater;
 import com.kms.billiardcounter.font.FontProvider;
-import com.kms.billiardcounter.support.GameFeeInfo;
+import com.kms.billiardcounter.support.GameFeeInfoConvertor;
 
 /**
  * 
@@ -56,7 +56,7 @@ public class GameListControlPanel extends JPanel {
 		
 		JPanel gameListPanel = new JPanel();						
 		
-		ArrayList<JLabel> nonPaidGameFeeInfoLabelList = NonPaidGamesLoader.getNonPaidGameFeeInfoLabelList( tableNumber );
+		ArrayList<JLabel> nonPaidGameFeeInfoLabelList = GameFeeInfoConvertor.convertToLabelList( NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber ) );
 		
 		Dimension gameLabelSize = new Dimension( 0, 50 );
 		

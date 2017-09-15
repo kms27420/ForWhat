@@ -16,7 +16,7 @@ import com.kms.billiardcounter.dao.basefee.BaseFeeLoader;
 import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
 import com.kms.billiardcounter.dao.nonpaidgames.NonPaidGamesLoader;
 import com.kms.billiardcounter.font.FontProvider;
-import com.kms.billiardcounter.support.GameFeeInfo;
+import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 
 /**
  * 

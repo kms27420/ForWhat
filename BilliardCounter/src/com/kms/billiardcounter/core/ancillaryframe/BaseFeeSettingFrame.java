@@ -47,6 +47,8 @@ public class BaseFeeSettingFrame extends JFrame{
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frameSize = new Dimension( 500, 400 );
 		
+		setTitle( "기본 요금 설정" );
+		
 		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
 		setSize( frameSize );
 		
@@ -112,12 +114,16 @@ public class BaseFeeSettingFrame extends JFrame{
 				
 				boolean isBaseFeeInited = BaseFeeLoader.isBaseFeeInited();
 				
-				if( BaseFeeTableUpdater.updateBaseFeeInfoToDB( baseFeePerMinute, baseFeeTime, feeIncreaseTime ) ) {
+				if( feeIncreaseTime > 1 ) {
+					
+					if( BaseFeeTableUpdater.updateBaseFeeInfoToDB( baseFeePerMinute, baseFeeTime, feeIncreaseTime ) ) {
 				
-					BaseFeeSettingFrame.this.dispose();
+						BaseFeeSettingFrame.this.dispose();
 					
-					if( !isBaseFeeInited )	new BilliardCounterFrame();
+						if( !isBaseFeeInited )	new BilliardCounterFrame();
 					
+					}
+				
 				}
 				
 			}

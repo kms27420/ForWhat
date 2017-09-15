@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 
 import com.kms.billiardcounter.core.ancillaryframe.BaseFeeSettingFrame;
 import com.kms.billiardcounter.core.ancillaryframe.DayTotalSalesFrame;
+import com.kms.billiardcounter.core.ancillaryframe.PasswordChangeFrame;
 import com.kms.billiardcounter.core.ancillaryframe.SearchedGameFeeInfoListFrame;
 import com.kms.billiardcounter.core.ancillaryframe.admin_approval.AdminDoorLockFrame;
 import com.kms.billiardcounter.core.ancillaryframe.admin_approval.FrameOpener;
@@ -115,8 +116,29 @@ public class TitleAndMenuPanel extends JPanel{
 		
 		JPanel menuPanel = new JPanel();
 		
+		JButton passwordChangeButton = new JButton( "비밀번호 변경" );
 		JButton baseFeeSettingButton = new JButton( "기본 요금 설정" );
 		JButton dayTotalSalesOpenButton = new JButton( "금일 매출" );
+		
+		passwordChangeButton.addActionListener( new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				new AdminDoorLockFrame( new FrameOpener() {
+					
+					@Override
+					public void openFrame() {
+
+						new PasswordChangeFrame();
+						
+					}
+					
+				} );
+				
+			}
+			
+		} );
 		
 		baseFeeSettingButton.addActionListener( new ActionListener() {
 			
@@ -149,8 +171,9 @@ public class TitleAndMenuPanel extends JPanel{
 		} );
 		
 		menuPanel.setPreferredSize( new Dimension(300, 50) );
-		menuPanel.setLayout( new GridLayout( 2, 1 ) );
+		menuPanel.setLayout( new GridLayout( 3, 1 ) );
 		
+		menuPanel.add( passwordChangeButton );
 		menuPanel.add( baseFeeSettingButton );
 		menuPanel.add( dayTotalSalesOpenButton );
 		

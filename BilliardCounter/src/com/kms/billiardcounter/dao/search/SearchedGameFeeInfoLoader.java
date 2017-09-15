@@ -6,7 +6,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
-import com.kms.billiardcounter.support.GameFeeInfo;
+import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 
 /**
  * 

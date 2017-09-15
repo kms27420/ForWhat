@@ -15,7 +15,7 @@ import javax.swing.border.BevelBorder;
 import com.kms.billiardcounter.core.string.DateAndTableNumberSentenceConvertor;
 import com.kms.billiardcounter.dao.search.SearchedGameFeeInfoLoader;
 import com.kms.billiardcounter.font.FontProvider;
-import com.kms.billiardcounter.support.GameFeeInfo;
+import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 
 /**
  * 

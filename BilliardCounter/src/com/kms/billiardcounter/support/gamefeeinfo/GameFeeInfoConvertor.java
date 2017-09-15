@@ -50,4 +50,25 @@ public class GameFeeInfoConvertor {
 		
 	}
 	
+	/**
+	 * 
+	 * GameFeeInfo를 JLabel 형태로 변환시켜주는 매서드
+	 * 
+	 * @param gameFeeInfo 변환하고자하는 GameFeeInfo
+	 * @return 변환완료된 JLabel
+	 */
+	public static final JLabel convertToLabel( GameFeeInfo gameFeeInfo ) {
+		
+		String usedTime = String.format( "%02d", gameFeeInfo.getUsedTime() / 60) + ":" + String.format( "%02d", gameFeeInfo.getUsedTime() % 60 );;
+		int gameNumber = gameFeeInfo.getGameNumber();;
+		
+		JLabel label = new JLabel( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + gameFeeInfo.getFee() + "원" );
+		
+		label.setFont( FontProvider.getDefaultFont() );
+		label.setHorizontalAlignment( JLabel.CENTER );
+		
+		return label;
+		
+	}
+	
 }

@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.Statement;
 
 import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
-import com.kms.billiardcounter.support.GameFeeInfo;
+import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 
 /**
  * 
@@ -92,7 +92,7 @@ public class GameListTableUpdater {
 	 * @param tableNumber 변경하고자하는(계산이 완료된) 당구대의 번호
 	 * @return update가 제대로 실행되면 true, 그렇지 않으면 false
 	 */
-	public static final boolean updateIsPaidToTrue( int tableNumber ){
+	public static final boolean updateIsPaidToTrue( int tableNumber, int gameNumber ){
 		
 		try{
 			
@@ -100,7 +100,7 @@ public class GameListTableUpdater {
 			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_LIST "
 					+ "SET IS_PAID = TRUE "
-					+ "WHERE TABLE_NUMBER = " + tableNumber + ";";
+					+ "WHERE TABLE_NUMBER = " + tableNumber + " AND GAME_NUMBER = " + gameNumber + ";";
 			
 			stmt.executeUpdate( sql );
 			
@@ -147,6 +147,42 @@ public class GameListTableUpdater {
 		} catch( Exception e ) {
 			
 			e.printStackTrace();
+			
+			return false;
+			
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * 요금을 계산할 때 사용자가 본래의 요금이 아닌 사용자가 지정한 요금으로 변경할 때 이를 데이터베이스에 반영시키는 매서드
+	 * 
+	 * @param gameFeeInfo 변경할 게임의 정보
+	 * @param changedFee 변경할 요금
+	 * @return update 작업이 정상적으로 처리되면 true, 그렇지 않으면 false
+	 */
+	public static final boolean reflectTheChangedFee( GameFeeInfo gameFeeInfo, int changedFee ) {
+		
+		try {
+			
+			Connection conn = BilliardCounterConnector.getConnection();
+			Statement stmt = conn.createStatement();
+			String sql = "UPDATE billiard_counter.GAME_LIST "
+					+ "SET FEE = " + changedFee
+					+ " WHERE DATE = '" + gameFeeInfo.getDate() + "' AND START_TIME = '" + gameFeeInfo.getStartTime() 
+					+ "' AND TABLE_NUMBER = " + gameFeeInfo.getTableNumber() + " AND GAME_NUMBER = " + gameFeeInfo.getGameNumber() + ";";
+			
+			stmt.executeUpdate( sql );
+			
+			stmt.close();
+			conn.close();
+			
+			return true;
+			
+		} catch( Exception e ) {
+			
+			//e.printStackTrace();
 			
 			return false;
 			

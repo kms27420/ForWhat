@@ -13,14 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.border.BevelBorder;
 
+import com.kms.billiardcounter.core.ancillaryframe.PaymentFrame;
 import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
 import com.kms.billiardcounter.core.event.GameTableReplace;
-import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
 import com.kms.billiardcounter.dao.nonpaidgames.NonPaidGamesLoader;
 import com.kms.billiardcounter.dao.usingtable.UsingTableLoader;
 import com.kms.billiardcounter.dao.usingtable.UsingTableUpdater;
 import com.kms.billiardcounter.font.FontProvider;
-import com.kms.billiardcounter.support.GameFeeInfoConvertor;
+import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfoConvertor;
 
 /**
  * 
@@ -214,19 +214,28 @@ public class GameListControlPanel extends JPanel {
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					
-					if( GameListTableUpdater.updateIsPaidToTrue( tableNumber ) ) {
+					if( NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber ).size() > 0 ) {
 						
-						if( UsingTableUpdater.deleteUsingTable( tableNumber ) ) {
+						new PaymentFrame( tableNumber, new ContentsPaneUpdater() {
 							
-							GameListControlPanel.this.removeAll();
+							@Override
+							public void update() {
+								
+								if( UsingTableUpdater.deleteUsingTable( tableNumber ) ) {
+									
+									GameListControlPanel.this.removeAll();
+									
+									GameListControlPanel.this.add( createTableGameControlPanel( tableNumber, contentsPaneUpdater ), BorderLayout.SOUTH );
+									GameListControlPanel.this.add( createGameListScrollPane( tableNumber ), BorderLayout.CENTER );
+								
+									GameListControlPanel.this.repaint();
+									GameListControlPanel.this.revalidate();
+									
+								}
+								
+							}
 							
-							GameListControlPanel.this.add( createTableGameControlPanel( tableNumber, contentsPaneUpdater ), BorderLayout.SOUTH );
-							GameListControlPanel.this.add( createGameListScrollPane( tableNumber ), BorderLayout.CENTER );
-						
-							GameListControlPanel.this.repaint();
-							GameListControlPanel.this.revalidate();
-							
-						}
+						} );
 						
 					}
 					

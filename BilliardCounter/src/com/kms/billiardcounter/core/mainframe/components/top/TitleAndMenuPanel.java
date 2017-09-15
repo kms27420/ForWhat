@@ -15,6 +15,8 @@ import javax.swing.JTextField;
 import com.kms.billiardcounter.core.ancillaryframe.BaseFeeSettingFrame;
 import com.kms.billiardcounter.core.ancillaryframe.DayTotalSalesFrame;
 import com.kms.billiardcounter.core.ancillaryframe.SearchedGameFeeInfoListFrame;
+import com.kms.billiardcounter.core.ancillaryframe.admin_approval.AdminDoorLockFrame;
+import com.kms.billiardcounter.core.ancillaryframe.admin_approval.FrameOpener;
 import com.kms.billiardcounter.font.FontProvider;
 
 /**
@@ -121,7 +123,15 @@ public class TitleAndMenuPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new BaseFeeSettingFrame();
+				new AdminDoorLockFrame( new FrameOpener() {
+					
+					public void openFrame() {
+						
+						new BaseFeeSettingFrame();
+						
+					}
+					
+				} );
 				
 			}
 			

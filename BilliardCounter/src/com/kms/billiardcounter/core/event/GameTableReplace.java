@@ -26,12 +26,11 @@ import com.kms.billiardcounter.font.FontProvider;
  */
 public class GameTableReplace {
 
-	private static ContentsPaneUpdater contentsPaneUpdater;
+	private static ContentsPaneUpdater contentsPaneUpdater = null;
 	
 	private static boolean isEnabled = false;
 	
-	private static int replaceFromThisTableNumber = 0;
-	private static int replaceToThisTableNumber = 0;
+	private static int activatedTableNumber = 0;
 	
 	private GameTableReplace() {}
 	
@@ -94,17 +93,14 @@ public class GameTableReplace {
 	 */
 	public static final void replaceCurrentGameTablePosition( int tableNumber ) {
 		
-		replaceToThisTableNumber = tableNumber;
+		if( GameListTableUpdater.replaceNonPaidGamesTableNumber( activatedTableNumber, tableNumber ) ) {
 		
-		if( GameListTableUpdater.replaceNonPaidGamesTableNumber( replaceFromThisTableNumber, replaceToThisTableNumber ) ) {
-		
-			if( UsingTableUpdater.deleteUsingTable( replaceFromThisTableNumber ) ) {
+			if( UsingTableUpdater.deleteUsingTable( activatedTableNumber ) ) {
 				
-				if( UsingTableUpdater.saveUsingTable( replaceToThisTableNumber ) ) {
+				if( UsingTableUpdater.saveUsingTable( tableNumber ) ) {
 					
 					isEnabled = false;
-					replaceFromThisTableNumber = 0;
-					replaceToThisTableNumber = 0;
+					activatedTableNumber = 0;
 				
 					contentsPaneUpdater.update();
 					
@@ -126,7 +122,7 @@ public class GameTableReplace {
 		
 		if( isThereReplacableTable() ) {
 			
-			replaceFromThisTableNumber = tableNumber;
+			activatedTableNumber = tableNumber;
 			isEnabled = true;
 		
 			contentsPaneUpdater.update();
@@ -165,7 +161,7 @@ public class GameTableReplace {
 	 */
 	public static final void disactivateReplacementWork() {
 		
-		replaceFromThisTableNumber = 0;
+		activatedTableNumber = 0;
 		isEnabled = false;
 	
 		contentsPaneUpdater.update();
@@ -192,7 +188,7 @@ public class GameTableReplace {
 	 */
 	public static final int getActivatedTableNumber() {
 		
-		return replaceFromThisTableNumber;
+		return activatedTableNumber;
 		
 	}
 	

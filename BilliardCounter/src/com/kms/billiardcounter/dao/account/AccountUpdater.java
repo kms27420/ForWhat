@@ -67,19 +67,17 @@ public class AccountUpdater {
 	 * 
 	 * 데이터베이스의 ACCOUNT 테이블에 접근하여 password를 변경해주는 매서드
 	 * 
-	 * @param id 입력받은 id
 	 * @param password 변경해줄 password
 	 * @return 작업이 정상적으로 처리되면 true, 그렇지 않으면 false
 	 */
-	public static final boolean updatePassword( String id, String password ) {
+	public static final boolean changePassword( String password ) {
 		
 		try {
 			
 			Connection conn = BilliardCounterConnector.getConnection();
 			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.ACCOUNT "
-					+ "SET PASSWORD = '" + password + "' "
-					+ "WHERE ID = '" + id + "';";
+					+ "SET PASSWORD = '" + password + "';";
 			
 			stmt.executeUpdate( sql );
 			

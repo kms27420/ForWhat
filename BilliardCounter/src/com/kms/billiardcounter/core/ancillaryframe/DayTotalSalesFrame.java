@@ -28,6 +28,9 @@ public class DayTotalSalesFrame extends JFrame {
 		
 		add( createDayTotalSalesPanel() ); 
 		
+		repaint();
+		revalidate();
+		
 		setVisible( true );
 		
 	}
@@ -36,6 +39,8 @@ public class DayTotalSalesFrame extends JFrame {
 		
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension frameSize = new Dimension( 500, 400 );
+		
+		setTitle( "금일 매출" );
 		
 		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
 		setSize( frameSize );

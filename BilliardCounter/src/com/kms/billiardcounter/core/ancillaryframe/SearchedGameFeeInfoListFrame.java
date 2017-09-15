@@ -38,6 +38,9 @@ public class SearchedGameFeeInfoListFrame extends JFrame {
 		
 		add( createSearchedGameFeeInfoListScrollPane( searchedGameFeeInfoList ) );
 		
+		repaint();
+		revalidate();
+		
 		setVisible( true );
 		
 	}

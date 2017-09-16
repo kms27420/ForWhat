@@ -54,7 +54,7 @@ public class BilliardTablePanel extends JPanel{
 	 */
 	public void refreshGameListControlPanel( int row, int col ) {
 		
-		if( TablePositionLoader.getTableNumberByRowAndCol( row, col ) != 0 && gameListControlPanel != null ) {
+		if( gameListControlPanel != null ) {
 			
 			remove( gameListControlPanel );
 			

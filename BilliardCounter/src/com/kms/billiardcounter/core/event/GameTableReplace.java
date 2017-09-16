@@ -26,7 +26,7 @@ import com.kms.billiardcounter.font.FontProvider;
  */
 public class GameTableReplace {
 
-	private static ContentsPaneUpdater contentsPaneUpdater = null;
+	private static ContentsPaneUpdater paneUpdaterAfterReplacingTable = null;
 	
 	private static boolean isEnabled = false;
 	
@@ -75,13 +75,13 @@ public class GameTableReplace {
 	
 	/**
 	 * 
-	 * contentsPaneUpdater를 설정해주는 매서드
+	 * paneUpdaterAfterReplacingTable를 설정해주는 매서드
 	 * 
-	 * @param contentsPaneUpdater 설정해줄 contentsPaneUpdater
+	 * @param paneUpdaterAfterReplacingTable 설정해줄 paneUpdaterAfterReplacingTable
 	 */
-	public static final void setContentsPaneUpdater( ContentsPaneUpdater contentsPaneUpdater ) {
+	public static final void setPaneUpdaterAfterReplacingTable( ContentsPaneUpdater paneUpdaterAfterReplacingTable ) {
 		
-		GameTableReplace.contentsPaneUpdater = contentsPaneUpdater;
+		GameTableReplace.paneUpdaterAfterReplacingTable = paneUpdaterAfterReplacingTable;
 		
 	}
 	
@@ -102,7 +102,7 @@ public class GameTableReplace {
 					isEnabled = false;
 					activatedTableNumber = 0;
 				
-					contentsPaneUpdater.update();
+					paneUpdaterAfterReplacingTable.update();
 					
 				}
 				
@@ -125,7 +125,7 @@ public class GameTableReplace {
 			activatedTableNumber = tableNumber;
 			isEnabled = true;
 		
-			contentsPaneUpdater.update();
+			paneUpdaterAfterReplacingTable.update();
 		
 		} else {
 			
@@ -164,7 +164,7 @@ public class GameTableReplace {
 		activatedTableNumber = 0;
 		isEnabled = false;
 	
-		contentsPaneUpdater.update();
+		paneUpdaterAfterReplacingTable.update();
 		
 	}
 	

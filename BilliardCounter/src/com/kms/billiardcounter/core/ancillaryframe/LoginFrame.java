@@ -168,7 +168,15 @@ public class LoginFrame extends JFrame {
 				String password = String.copyValueOf( passwordInputField.getPassword() );
 				String reInputedPassword = String.copyValueOf( passwordReInputField.getPassword() );
 				
-				if( password.equals( reInputedPassword ) ) {
+				int idMinLength = AccountUpdater.ID_MIN_LENGTH;
+				int idMaxLength = AccountUpdater.ID_MAX_LENGTH;
+				
+				int passwordMinLength = AccountUpdater.PASSWORD_MIN_LENGTH;
+				int passwordMaxLength = AccountUpdater.PASSWORD_MAX_LENGTH;
+				
+				if( id.length() >= idMinLength && id.length() <= idMaxLength 
+					&& password.length() >= passwordMinLength && password.length() <= passwordMaxLength 
+					&& password.equals( reInputedPassword ) ) {
 					
 					if( AccountUpdater.saveAccountToDB( id, password ) ) {
 						
@@ -178,7 +186,6 @@ public class LoginFrame extends JFrame {
 						
 					}
 					
-					
 				} else {
 					
 					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -186,7 +193,17 @@ public class LoginFrame extends JFrame {
 					
 					JFrame alertFrame = new JFrame( "비밀번호 재확인 요망" );
 					
-					JLabel alertLabel = new JLabel( "입력한 두 비밀번호가 일치하도록 입력해주세요." );
+					JLabel alertLabel = new JLabel();
+					
+					if( id.length() < idMinLength || id.length() > idMaxLength ) {
+						
+						alertLabel.setText( "아이디를 " + idMinLength + "~" + idMaxLength + " 자리로 설정해주십시오." );
+					
+					} else if( password.length() < passwordMinLength || password.length() > passwordMaxLength ) {
+						
+						alertLabel.setText( "비밀번호를 " + passwordMinLength + "~" + passwordMaxLength + " 자리로 설정해주십시오." );
+					
+					} else 	alertLabel.setText( "입력한 두 비밀번호가 일치하도록 입력해주세요." );
 					
 					alertLabel.setHorizontalAlignment( JLabel.CENTER );
 					alertLabel.setFont( FontProvider.getDefaultFont() );

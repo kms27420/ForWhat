@@ -79,7 +79,11 @@ public class PasswordChangeFrame extends JFrame {
 				String inputedPassword = String.copyValueOf( passwordInputField.getPassword() );
 				String reInputedPassword = String.copyValueOf( passwordReInputField.getPassword() );
 				
-				if( inputedPassword.equals( reInputedPassword ) ) {
+				int passwordMinLength = AccountUpdater.PASSWORD_MIN_LENGTH;
+				int passwordMaxLength = AccountUpdater.PASSWORD_MAX_LENGTH;
+				
+				if( inputedPassword.length() >= passwordMinLength && inputedPassword.length() <= passwordMaxLength 
+					&& inputedPassword.equals( reInputedPassword ) ) {
 				
 					if( AccountUpdater.changePassword( String.copyValueOf( passwordInputField.getPassword() ) ) ) {
 						
@@ -94,7 +98,13 @@ public class PasswordChangeFrame extends JFrame {
 					
 					JFrame alertFrame = new JFrame( "비밀번호 재확인 요망" );
 					
-					JLabel alertLabel = new JLabel( "입력한 두 비밀번호가 일치하도록 입력해주세요." );
+					JLabel alertLabel = new JLabel();
+					
+					if( inputedPassword.length() < passwordMinLength || inputedPassword.length() > passwordMaxLength ) {
+						
+						alertLabel.setText( "비밀번호를 " + passwordMinLength + "~" + passwordMaxLength + " 자리로 설정해주십시오." );
+						
+					} else	alertLabel.setText( "입력한 두 비밀번호가 일치하도록 입력해주세요." );
 					
 					alertLabel.setHorizontalAlignment( JLabel.CENTER );
 					alertLabel.setFont( FontProvider.getDefaultFont() );

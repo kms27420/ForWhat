@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
 import com.kms.billiardcounter.core.event.GameTableReplace;
 import com.kms.billiardcounter.core.mainframe.components.bottom.components.BilliardTablePanel;
+import com.kms.billiardcounter.dao.tableposition.TablePositionLoader;
 
 /**
  * 
@@ -20,11 +21,32 @@ import com.kms.billiardcounter.core.mainframe.components.bottom.components.Billi
 
 public class BilliardTablesCollectionPanel extends JPanel{
 	
+	private class Matrix {
+		
+		private static final int MAX_ROW = 4;
+		private static final int MAX_COL = 4;
+		
+	}
+
 	private ArrayList<JPanel> billiardTablePanelsList;
 	
 	public BilliardTablesCollectionPanel() {
 		
-		GameTableReplace.setContentsPaneUpdater( new ContentsPaneUpdater() {
+		initThisPanel();
+		
+		addComponents( billiardTablePanelsList = createBilliardTablePanelsList() );
+		
+		repaint();
+		revalidate();
+		
+	}
+	
+	private void initThisPanel() {
+		
+		setPreferredSize( new Dimension( 0, 385 * Matrix.MAX_ROW ) );
+		setLayout( new GridLayout( Matrix.MAX_ROW, Matrix.MAX_COL ) );
+		
+		GameTableReplace.setPaneUpdaterAfterReplacingTable( new ContentsPaneUpdater() {
 			
 			@Override
 			public void update() {
@@ -33,7 +55,11 @@ public class BilliardTablesCollectionPanel extends JPanel{
 				
 				for( int index = 0; index < billiardTablePanelsList.size(); index++ ){
 					
-					( (BilliardTablePanel)billiardTablePanelsList.get( index ) ).refreshGameListControlPanel( index / Aligner.MAX_COL, index % Aligner.MAX_COL );
+					if( TablePositionLoader.getTableNumberByRowAndCol( index / Matrix.MAX_COL, index % Matrix.MAX_COL ) != 0 ) {
+					
+						( (BilliardTablePanel)billiardTablePanelsList.get( index ) ).refreshGameListControlPanel( index / Matrix.MAX_COL, index % Matrix.MAX_COL );
+					
+					}
 					
 				}
 				
@@ -45,29 +71,6 @@ public class BilliardTablesCollectionPanel extends JPanel{
 			}
 			
 		} );
-		
-		Aligner aligner = new Aligner();
-		
-		addComponents( billiardTablePanelsList = createBilliardTablePanelsList() );
-		
-		aligner.align();
-		
-		repaint();
-		revalidate();
-		
-	}
-	
-	private class Aligner {
-		
-		public static final int MAX_ROW = 4;
-		public static final int MAX_COL = 4;
-		
-		private void align(){
-			
-			BilliardTablesCollectionPanel.this.setPreferredSize( new Dimension( 0, 385 * MAX_ROW ) );
-			BilliardTablesCollectionPanel.this.setLayout( new GridLayout( MAX_ROW, MAX_COL ) );
-			
-		}
 		
 	}
 	
@@ -85,9 +88,9 @@ public class BilliardTablesCollectionPanel extends JPanel{
 		
 		ArrayList<JPanel> billiardTablePanelsList = new ArrayList<JPanel>();
 		
-		for(int row = 0; row < Aligner.MAX_ROW; row++){
+		for(int row = 0; row < Matrix.MAX_ROW; row++){
 			
-			for(int col = 0; col < Aligner.MAX_COL; col++){
+			for(int col = 0; col < Matrix.MAX_COL; col++){
 				
 				billiardTablePanelsList.add( new BilliardTablePanel(row, col) );
 				

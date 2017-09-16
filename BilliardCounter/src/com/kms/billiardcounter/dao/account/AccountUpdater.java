@@ -14,14 +14,20 @@ import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
  */
 public class AccountUpdater {
 
+	public static final int ID_MIN_LENGTH = 4;
+	public static final int ID_MAX_LENGTH = 15;
+	
+	public static final int PASSWORD_MIN_LENGTH = 6;
+	public static final int PASSWORD_MAX_LENGTH = 20;
+	
 	private AccountUpdater() {}
 	
 	private static void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
 		
 		stmt.execute(
 				"CREATE TABLE IF NOT EXISTS billiard_counter.ACCOUNT("
-				+ "ID VARCHAR(15) NOT NULL,"
-				+ "PASSWORD VARCHAR(20) NOT NULL,"
+				+ "ID VARCHAR(" + ID_MAX_LENGTH + ") NOT NULL,"
+				+ "PASSWORD VARCHAR(" + PASSWORD_MAX_LENGTH + ") NOT NULL,"
 				+ "PRIMARY KEY(ID));"
 				);
 		

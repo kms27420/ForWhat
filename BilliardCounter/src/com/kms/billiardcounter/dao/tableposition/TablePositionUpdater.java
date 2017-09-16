@@ -12,9 +12,9 @@ import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
  * @author Kwon
  *
  */
-public class TablePositionSaver {
+public class TablePositionUpdater {
 	
-	private TablePositionSaver(){}
+	private TablePositionUpdater(){}
 	
 	private static final void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
 		
@@ -27,6 +27,15 @@ public class TablePositionSaver {
 		
 	}
 	
+	/**
+	 * 
+	 * 당구 테이블들의 위치를 데이터베이스에 저장해주는 매서드
+	 * 
+	 * @param tableNumber 당구대 번호
+	 * @param row 당구대의 row위치
+	 * @param col 당구대의 col위치
+	 * @return 저장 작업이 정상적으로 수행되면 true, 그렇지 않으면 false
+	 */
 	public static final boolean saveTablePosition( int tableNumber, int row, int col ){
 		
 		try{
@@ -48,6 +57,39 @@ public class TablePositionSaver {
 		}catch(Exception e){
 			
 			//e.printStackTrace();
+			
+			return false;
+			
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * 당구 테이블의 위치를 데이터베이스에서 삭제하는 매서드
+	 * 
+	 * @param tableNumber 삭제하고자하는 당구대의 번호
+	 * @return 삭제 작업이 정상적으로 처리되면 true, 그렇지 않으면 false
+	 */
+	public static final boolean deleteTablePosition( int tableNumber ) {
+		
+		try {
+			
+			Connection conn = BilliardCounterConnector.getConnection();
+			Statement stmt = conn.createStatement();
+			String sql = "DELETE FROM billiard_counter.CREATED_TABLE "
+						+ "WHERE TABLE_NUMBER = " + tableNumber + ";";
+			
+			stmt.executeUpdate(sql);
+			
+			stmt.close();
+			conn.close();
+			
+			return true;
+			
+		} catch( Exception e ) {
+			
+			e.printStackTrace();
 			
 			return false;
 			

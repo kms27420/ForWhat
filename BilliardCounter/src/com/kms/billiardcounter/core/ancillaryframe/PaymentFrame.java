@@ -40,12 +40,12 @@ public class PaymentFrame extends JFrame {
 	
 	private ArrayList<GameFeeInfo> selectedGameFeeInfoList = new ArrayList<GameFeeInfo>();
 	
-	public PaymentFrame( int tableNumber, ContentsPaneUpdater contentsPaneUpdater ) {
+	public PaymentFrame( int tableNumber, ContentsPaneUpdater paidTablePaneUpdater ) {
 		
 		initThisFrame( tableNumber );
 		
 		add( createSelectOptionPanel(), BorderLayout.NORTH );
-		add( createNonPaidGameFeeInfoListPanel( tableNumber, contentsPaneUpdater ), BorderLayout.CENTER );
+		add( createNonPaidGameFeeInfoListPanel( tableNumber, paidTablePaneUpdater ), BorderLayout.CENTER );
 		add( createPaymentControlPanel(), BorderLayout.SOUTH );
 		
 		repaint();
@@ -162,7 +162,7 @@ public class PaymentFrame extends JFrame {
 		
 	}
 	
-	private JPanel createNonPaidGameFeeInfoListPanel( int tableNumber, ContentsPaneUpdater contentsPaneUpdater ) {
+	private JPanel createNonPaidGameFeeInfoListPanel( int tableNumber, ContentsPaneUpdater paidTablePaneUpdater ) {
 		
 		JPanel nonPaidGameFeeInfoListPanel = new JPanel();
 		
@@ -278,7 +278,7 @@ public class PaymentFrame extends JFrame {
 					
 					PaymentFrame.this.dispose();
 					
-					contentsPaneUpdater.update();
+					paidTablePaneUpdater.update();
 					
 					return;
 					

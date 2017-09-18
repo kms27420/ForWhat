@@ -10,11 +10,10 @@ import java.sql.Statement;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 
-import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
-import com.kms.billiardcounter.dao.connection.BilliardCounterConnector;
-import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
-import com.kms.billiardcounter.dao.usingtable.UsingTableLoader;
-import com.kms.billiardcounter.dao.usingtable.UsingTableUpdater;
+import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.database.game_list.GameListModifier;
+import com.kms.billiardcounter.database.game_viewer.GameViewerLoader;
+import com.kms.billiardcounter.database.game_viewer.GameViewerModifier;
 import com.kms.billiardcounter.font.FontProvider;
 
 /**
@@ -26,7 +25,13 @@ import com.kms.billiardcounter.font.FontProvider;
  */
 public class GameTableReplace {
 
-	private static ContentsPaneUpdater paneUpdaterAfterReplacingTable = null;
+	public interface OnReplaceTableListener {
+		
+		public void onReplaceTable();
+		
+	}
+	
+	private static OnReplaceTableListener onReplaceTableListener = null;
 	
 	private static boolean isEnabled = false;
 	
@@ -34,54 +39,15 @@ public class GameTableReplace {
 	
 	private GameTableReplace() {}
 	
-	private static final boolean isThereReplacableTable() {
-		
-		try {
-			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
-			String sql = "SELECT COUNT( TABLE_NUMBER ) AS COUNT_OF_CREATED_TABLE "
-					+ "FROM billiard_counter.CREATED_TABLE;";
-			
-			ResultSet rs = stmt.executeQuery( sql );
-			
-			int countOfCreatedTable = 0;
-			
-			while( rs.next() ) {
-				
-				countOfCreatedTable = rs.getInt( "COUNT_OF_CREATED_TABLE" );
-				
-			}
-
-			int countOfUsingTable = UsingTableLoader.getCountOfUsingTable();
-			
-			rs.close();
-			stmt.close();
-			conn.close();
-			
-			if( countOfCreatedTable == countOfUsingTable )	return false;
-			
-			return true;
-			
-		} catch( Exception e ) {
-			
-			e.printStackTrace();
-			
-			return false;
-			
-		}
-		
-	}
-	
 	/**
 	 * 
 	 * paneUpdaterAfterReplacingTable를 설정해주는 매서드
 	 * 
 	 * @param paneUpdaterAfterReplacingTable 설정해줄 paneUpdaterAfterReplacingTable
 	 */
-	public static final void setPaneUpdaterAfterReplacingTable( ContentsPaneUpdater paneUpdaterAfterReplacingTable ) {
+	public static final void setOnReplaceTableListener( OnReplaceTableListener onReplaceTableListener ) {
 		
-		GameTableReplace.paneUpdaterAfterReplacingTable = paneUpdaterAfterReplacingTable;
+		GameTableReplace.onReplaceTableListener = onReplaceTableListener;
 		
 	}
 	
@@ -93,16 +59,16 @@ public class GameTableReplace {
 	 */
 	public static final void replaceCurrentGameTablePosition( int tableNumber ) {
 		
-		if( GameListTableUpdater.replaceNonPaidGamesTableNumber( activatedTableNumber, tableNumber ) ) {
+		if( GameListModifier.replaceNonPaidGamesTableNumber( activatedTableNumber, tableNumber ) ) {
 		
-			if( UsingTableUpdater.deleteUsingTable( activatedTableNumber ) ) {
+			if( GameViewerModifier.endUseThisGameViewer( activatedTableNumber ) ) {
 				
-				if( UsingTableUpdater.saveUsingTable( tableNumber ) ) {
+				if( GameViewerModifier.useThisGameViewer( tableNumber ) ) {
 					
 					isEnabled = false;
 					activatedTableNumber = 0;
 				
-					paneUpdaterAfterReplacingTable.update();
+					onReplaceTableListener.onReplaceTable();
 					
 				}
 				
@@ -120,12 +86,12 @@ public class GameTableReplace {
 	 */
 	public static final void activateReplacementWork( int tableNumber ) {
 		
-		if( isThereReplacableTable() ) {
+		if( GameViewerLoader.getIsThereUnusedGameViewer() ) {
 			
 			activatedTableNumber = tableNumber;
 			isEnabled = true;
 		
-			paneUpdaterAfterReplacingTable.update();
+			onReplaceTableListener.onReplaceTable();
 		
 		} else {
 			
@@ -164,7 +130,7 @@ public class GameTableReplace {
 		activatedTableNumber = 0;
 		isEnabled = false;
 	
-		paneUpdaterAfterReplacingTable.update();
+		onReplaceTableListener.onReplaceTable();
 		
 	}
 	

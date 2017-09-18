@@ -29,20 +29,9 @@ public class GameFeeInfoConvertor {
 		
 		ArrayList<JLabel> labelList = new ArrayList<JLabel>();
 		
-		String usedTime;
-		int gameNumber;
-		
 		for( int index = 0; index < gameFeeInfoList.size(); index++ ) {
 			
-			usedTime = String.format( "%02d", gameFeeInfoList.get(index).getUsedTime() / 60) + ":" + String.format( "%02d", gameFeeInfoList.get(index).getUsedTime() % 60 );
-			gameNumber = gameFeeInfoList.get(index).getGameNumber();
-			
-			JLabel addedLabel = new JLabel( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + gameFeeInfoList.get(index).getFee() + "원");
-			
-			addedLabel.setFont( FontProvider.getDefaultFont() );
-			addedLabel.setHorizontalAlignment( JLabel.CENTER );
-			
-			labelList.add( addedLabel );
+			labelList.add( convertToLabel( gameFeeInfoList.get( index ) ) );
 			
 		}
 		

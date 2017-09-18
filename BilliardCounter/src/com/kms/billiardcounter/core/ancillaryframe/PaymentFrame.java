@@ -17,11 +17,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
-import com.kms.billiardcounter.core.string.NumericManufacturer;
-import com.kms.billiardcounter.dao.gamelist.GameListTableUpdater;
-import com.kms.billiardcounter.dao.nonpaidgames.NonPaidGamesLoader;
+import com.kms.billiardcounter.database.game_list.GameListModifier;
+import com.kms.billiardcounter.database.game_viewer.GameViewerModifier;
+import com.kms.billiardcounter.database.game_list.GameListLoader;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.support.NumericManufacturer;
 import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfoConvertor;
 
@@ -34,22 +34,43 @@ import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfoConvertor;
  */
 public class PaymentFrame extends JFrame {
 
-	private ContentsPaneUpdater nonPaidGameFeeInfoListPanelOptionSettingUpdater = null;
-	private ContentsPaneUpdater nonPaidGameFeeInfoListPanelAfterPaymentUpdater = null;
-	private ContentsPaneUpdater paymentControlPanelUpdater = null;
+	public interface OnPaymentCompleteListener {
+		
+		public void onPaymentComplete();
+		
+	}
+	
+	private interface OnOptionChangeListener {
+		
+		public void onOptionChange();
+		
+	}
+	
+	private interface OnSelectedGamePayListener {
+		
+		public void onSelectedGamePay();
+		
+	}
+	
+	private interface OnSelectedGameAddListener {
+		
+		public void onSelectedGameAdd();
+		
+	}
+	
+	private OnOptionChangeListener onOptionChangeListener = null;
+	private OnSelectedGamePayListener onSelectedGamePayListener = null;
+	private OnSelectedGameAddListener onSelectedGameAddListener = null;
 	
 	private ArrayList<GameFeeInfo> selectedGameFeeInfoList = new ArrayList<GameFeeInfo>();
 	
-	public PaymentFrame( int tableNumber, ContentsPaneUpdater paidTablePaneUpdater ) {
+	public PaymentFrame( int tableNumber, OnPaymentCompleteListener onPaymentCompleteListener ) {
 		
 		initThisFrame( tableNumber );
 		
 		add( createSelectOptionPanel(), BorderLayout.NORTH );
-		add( createNonPaidGameFeeInfoListPanel( tableNumber, paidTablePaneUpdater ), BorderLayout.CENTER );
+		add( createNonPaidGameFeeInfoListPanel( tableNumber, onPaymentCompleteListener ), BorderLayout.CENTER );
 		add( createPaymentControlPanel(), BorderLayout.SOUTH );
-		
-		repaint();
-		revalidate();
 		
 		setVisible( true );
 		
@@ -133,7 +154,7 @@ public class PaymentFrame extends JFrame {
 					selectedOptionLabel.clear();
 					selectedOptionLabel.add( (JLabel)e.getComponent() );
 					
-					nonPaidGameFeeInfoListPanelOptionSettingUpdater.update();
+					onOptionChangeListener.onOptionChange();
 					
 				} 
 				
@@ -162,11 +183,11 @@ public class PaymentFrame extends JFrame {
 		
 	}
 	
-	private JPanel createNonPaidGameFeeInfoListPanel( int tableNumber, ContentsPaneUpdater paidTablePaneUpdater ) {
+	private JPanel createNonPaidGameFeeInfoListPanel( int tableNumber, OnPaymentCompleteListener onPaymentCompleteListener ) {
 		
 		JPanel nonPaidGameFeeInfoListPanel = new JPanel();
 		
-		ArrayList<GameFeeInfo> nonPaidGameFeeInfoList = NonPaidGamesLoader.getNonPaidGameFeeInfoList( tableNumber );
+		ArrayList<GameFeeInfo> nonPaidGameFeeInfoList = GameListLoader.getNonPaidGameFeeInfoList( tableNumber );
 		ArrayList<JLabel> nonPaidGameFeeInfoLabelList = GameFeeInfoConvertor.convertToLabelList( nonPaidGameFeeInfoList );
 		
 		MouseListener labelListMouseListener = new MouseListener() {
@@ -226,16 +247,16 @@ public class PaymentFrame extends JFrame {
 					
 				}
 				
-				paymentControlPanelUpdater.update();
+				onSelectedGameAddListener.onSelectedGameAdd();
 				
 			}
 			
 		};
 		
-		nonPaidGameFeeInfoListPanelOptionSettingUpdater = new ContentsPaneUpdater() {
+		onOptionChangeListener = new OnOptionChangeListener() {
 			
 			@Override
-			public void update() {
+			public void onOptionChange() {
 				
 				if( nonPaidGameFeeInfoLabelList.get(0).getMouseListeners().length == 0 ) {
 					
@@ -263,22 +284,26 @@ public class PaymentFrame extends JFrame {
 					
 				}
 				
-				paymentControlPanelUpdater.update();
+				onSelectedGameAddListener.onSelectedGameAdd();
 				
 			}
 			
 		};
 		
-		nonPaidGameFeeInfoListPanelAfterPaymentUpdater = new ContentsPaneUpdater() {
+		onSelectedGamePayListener = new OnSelectedGamePayListener() {
 			
 			@Override
-			public void update() {
+			public void onSelectedGamePay() {
 				
 				if( selectedGameFeeInfoList.size() == nonPaidGameFeeInfoList.size() ) {
 					
 					PaymentFrame.this.dispose();
 					
-					paidTablePaneUpdater.update();
+					if( GameViewerModifier.endUseThisGameViewer( tableNumber ) ) {
+					
+						onPaymentCompleteListener.onPaymentComplete();
+					
+					}
 					
 					return;
 					
@@ -306,7 +331,7 @@ public class PaymentFrame extends JFrame {
 				nonPaidGameFeeInfoListPanel.repaint();
 				nonPaidGameFeeInfoListPanel.revalidate();
 				
-				paymentControlPanelUpdater.update();
+				onSelectedGameAddListener.onSelectedGameAdd();
 				
 			}
 			
@@ -344,10 +369,10 @@ public class PaymentFrame extends JFrame {
 		
 		JButton payButton = new JButton( "계산" );
 		
-		paymentControlPanelUpdater = new ContentsPaneUpdater() {
+		onSelectedGameAddListener = new OnSelectedGameAddListener() {
 
 			@Override
-			public void update() {
+			public void onSelectedGameAdd() {
 
 				int fee = 0;
 				
@@ -370,7 +395,7 @@ public class PaymentFrame extends JFrame {
 		
 		feeTextField.setPreferredSize( new Dimension( 200, 0 ) );
 		feeTextField.setFont( FontProvider.getDefaultFont() );
-		paymentControlPanelUpdater.update();
+		onSelectedGameAddListener.onSelectedGameAdd();
 		
 		feeUnitLabel.setPreferredSize( new Dimension( 50, 0 ) );
 		feeUnitLabel.setHorizontalTextPosition( JLabel.CENTER );
@@ -406,7 +431,7 @@ public class PaymentFrame extends JFrame {
 						
 						if( index == 0 ) {
 							
-							if( !GameListTableUpdater.reflectTheChangedFee( selectedGameFeeInfoList.get( index ), changedFee ) ) {
+							if( !GameListModifier.reflectTheChangedFee( selectedGameFeeInfoList.get( index ), changedFee ) ) {
 								
 								System.out.println( "오류 발생" );
 								
@@ -416,7 +441,7 @@ public class PaymentFrame extends JFrame {
 							
 						} else {
 							
-							if( !GameListTableUpdater.reflectTheChangedFee( selectedGameFeeInfoList.get( index ), 0 ) ) {
+							if( !GameListModifier.reflectTheChangedFee( selectedGameFeeInfoList.get( index ), 0 ) ) {
 								
 								System.out.println( "오류 발생" );
 								
@@ -428,7 +453,7 @@ public class PaymentFrame extends JFrame {
 						
 					}
 					
-					if( !GameListTableUpdater.updateIsPaidToTrue( tableNumber, selectedGameFeeInfoList.get( index ).getGameNumber() ) ) {
+					if( !GameListModifier.updateIsPaidToTrue( tableNumber, selectedGameFeeInfoList.get( index ).getGameNumber() ) ) {
 						
 						System.out.println( "오류 발생" );
 						
@@ -439,7 +464,7 @@ public class PaymentFrame extends JFrame {
 					
 				}
 				
-				nonPaidGameFeeInfoListPanelAfterPaymentUpdater.update();
+				onSelectedGamePayListener.onSelectedGamePay();
 				
 			}
 			

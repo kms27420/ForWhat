@@ -12,7 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import com.kms.billiardcounter.dao.account.AccountUpdater;
+import com.kms.billiardcounter.database.account.AccountModifier;
 import com.kms.billiardcounter.font.FontProvider;
 
 /**
@@ -29,9 +29,6 @@ public class PasswordChangeFrame extends JFrame {
 		initThisFrame();
 		
 		add( createPasswordChangePanel() );
-		
-		repaint();
-		revalidate();
 		
 		setVisible( true );
 		
@@ -79,13 +76,13 @@ public class PasswordChangeFrame extends JFrame {
 				String inputedPassword = String.copyValueOf( passwordInputField.getPassword() );
 				String reInputedPassword = String.copyValueOf( passwordReInputField.getPassword() );
 				
-				int passwordMinLength = AccountUpdater.PASSWORD_MIN_LENGTH;
-				int passwordMaxLength = AccountUpdater.PASSWORD_MAX_LENGTH;
+				int passwordMinLength = AccountModifier.PASSWORD_MIN_LENGTH;
+				int passwordMaxLength = AccountModifier.PASSWORD_MAX_LENGTH;
 				
 				if( inputedPassword.length() >= passwordMinLength && inputedPassword.length() <= passwordMaxLength 
 					&& inputedPassword.equals( reInputedPassword ) ) {
 				
-					if( AccountUpdater.changePassword( String.copyValueOf( passwordInputField.getPassword() ) ) ) {
+					if( AccountModifier.changePassword( String.copyValueOf( passwordInputField.getPassword() ) ) ) {
 						
 						PasswordChangeFrame.this.dispose();
 						

@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 
-import com.kms.billiardcounter.dao.account.AccountCheck;
+import com.kms.billiardcounter.database.account.AccountCheck;
 import com.kms.billiardcounter.font.FontProvider;
 
 /**

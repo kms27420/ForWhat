@@ -10,7 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-import com.kms.billiardcounter.dao.daysales.DaySalesLoader;
+import com.kms.billiardcounter.database.game_list.GameListLoader;
 import com.kms.billiardcounter.font.FontProvider;
 
 /**
@@ -27,9 +27,6 @@ public class DayTotalSalesFrame extends JFrame {
 		initThisFrame();
 		
 		add( createDayTotalSalesPanel() ); 
-		
-		repaint();
-		revalidate();
 		
 		setVisible( true );
 		
@@ -61,7 +58,7 @@ public class DayTotalSalesFrame extends JFrame {
 		
 		String date = sdf.format( new Date() );
 		
-		daySalesLabel.setText( "오늘 총 매출 : " + String.format( "%,10d" , DaySalesLoader.getDaySales( date ) ) + " 원"  );
+		daySalesLabel.setText( "오늘 총 매출 : " + String.format( "%,10d" , GameListLoader.getDaySales( date ) ) + " 원"  );
 		daySalesLabel.setFont( FontProvider.getDefaultFont() );
 		daySalesLabel.setHorizontalAlignment( JLabel.CENTER );
 		

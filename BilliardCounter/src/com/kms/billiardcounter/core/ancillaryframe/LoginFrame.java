@@ -13,10 +13,10 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
-import com.kms.billiardcounter.core.mainframe.BilliardCounterFrame;
-import com.kms.billiardcounter.dao.account.AccountCheck;
-import com.kms.billiardcounter.dao.account.AccountUpdater;
-import com.kms.billiardcounter.dao.basefee.BaseFeeLoader;
+import com.kms.billiardcounter.core.mainframe.MainFrame;
+import com.kms.billiardcounter.database.account.AccountCheck;
+import com.kms.billiardcounter.database.account.AccountModifier;
+import com.kms.billiardcounter.database.base_fee.BaseFeeLoader;
 import com.kms.billiardcounter.font.FontProvider;
 
 public class LoginFrame extends JFrame {
@@ -36,9 +36,6 @@ public class LoginFrame extends JFrame {
 			add( createAccountCreatePanel() );
 			
 		}
-		
-		repaint();
-		revalidate();
 		
 		setVisible( true );
 		
@@ -84,9 +81,9 @@ public class LoginFrame extends JFrame {
 					
 					LoginFrame.this.dispose();
 					
-					if( BaseFeeLoader.isBaseFeeInited() ) {
+					if( BaseFeeLoader.loadBaseFeeInfo().getIsValid() ) {
 						
-						new BilliardCounterFrame();
+						new MainFrame();
 					
 					} else {
 						
@@ -168,17 +165,17 @@ public class LoginFrame extends JFrame {
 				String password = String.copyValueOf( passwordInputField.getPassword() );
 				String reInputedPassword = String.copyValueOf( passwordReInputField.getPassword() );
 				
-				int idMinLength = AccountUpdater.ID_MIN_LENGTH;
-				int idMaxLength = AccountUpdater.ID_MAX_LENGTH;
+				int idMinLength = AccountModifier.ID_MIN_LENGTH;
+				int idMaxLength = AccountModifier.ID_MAX_LENGTH;
 				
-				int passwordMinLength = AccountUpdater.PASSWORD_MIN_LENGTH;
-				int passwordMaxLength = AccountUpdater.PASSWORD_MAX_LENGTH;
+				int passwordMinLength = AccountModifier.PASSWORD_MIN_LENGTH;
+				int passwordMaxLength = AccountModifier.PASSWORD_MAX_LENGTH;
 				
 				if( id.length() >= idMinLength && id.length() <= idMaxLength 
 					&& password.length() >= passwordMinLength && password.length() <= passwordMaxLength 
 					&& password.equals( reInputedPassword ) ) {
 					
-					if( AccountUpdater.saveAccountToDB( id, password ) ) {
+					if( AccountModifier.saveAccountToDB( id, password ) ) {
 						
 						LoginFrame.this.dispose();
 						

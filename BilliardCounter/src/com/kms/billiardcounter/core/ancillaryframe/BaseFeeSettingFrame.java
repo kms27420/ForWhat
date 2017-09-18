@@ -13,12 +13,12 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.kms.billiardcounter.core.contentspaneupdater.ContentsPaneUpdater;
-import com.kms.billiardcounter.core.mainframe.BilliardCounterFrame;
-import com.kms.billiardcounter.core.string.NumericManufacturer;
-import com.kms.billiardcounter.dao.basefee.BaseFeeLoader;
-import com.kms.billiardcounter.dao.basefee.BaseFeeTableUpdater;
+import com.kms.billiardcounter.core.mainframe.MainFrame;
+import com.kms.billiardcounter.database.base_fee.BaseFeeLoader;
+import com.kms.billiardcounter.database.base_fee.BaseFeeModifier;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.support.BaseFeeInfo;
+import com.kms.billiardcounter.support.NumericManufacturer;
 
 /**
  * 
@@ -34,9 +34,6 @@ public class BaseFeeSettingFrame extends JFrame{
 		initThisFrame();
 		
 		add( createBaseFeeSettingPanel() );
-		
-		repaint();
-		revalidate();
 		
 		setVisible( true );
 		
@@ -56,7 +53,7 @@ public class BaseFeeSettingFrame extends JFrame{
 		
 		setDefaultCloseOperation( DISPOSE_ON_CLOSE );
 		
-		if( !BaseFeeLoader.isBaseFeeInited() ) {
+		if( !BaseFeeLoader.loadBaseFeeInfo().getIsValid() ) {
 			
 			setDefaultCloseOperation( EXIT_ON_CLOSE );
 			
@@ -112,18 +109,24 @@ public class BaseFeeSettingFrame extends JFrame{
 				int baseFeeTime = NumericManufacturer.getIntConsistingOnlyOfNumeric( baseFeeTimeTextField.getText() );
 				int feeIncreaseTime = NumericManufacturer.getIntConsistingOnlyOfNumeric( feeIncreaseTimeTextField.getText() );
 				
-				boolean isBaseFeeInited = BaseFeeLoader.isBaseFeeInited();
-				
-				if( feeIncreaseTime > 1 ) {
+				if( BaseFeeLoader.loadBaseFeeInfo().getIsValid() ) {
 					
-					if( BaseFeeTableUpdater.updateBaseFeeInfoToDB( baseFeePerMinute, baseFeeTime, feeIncreaseTime ) ) {
-				
+					if( BaseFeeModifier.changeBaseFeeInfo( new BaseFeeInfo( baseFeePerMinute, baseFeeTime, feeIncreaseTime ) ) ) {
+						
 						BaseFeeSettingFrame.this.dispose();
-					
-						if( !isBaseFeeInited )	new BilliardCounterFrame();
-					
+						
 					}
-				
+					
+				} else {
+					
+					if( BaseFeeModifier.saveBaseFeeInfoToDB( new BaseFeeInfo( baseFeePerMinute, baseFeeTime, feeIncreaseTime ) ) ) {
+						
+						BaseFeeSettingFrame.this.dispose();
+						
+						new MainFrame();
+						
+					}
+					
 				}
 				
 			}

@@ -19,33 +19,36 @@ import javax.swing.JTextField;
 import javax.swing.border.BevelBorder;
 
 import com.kms.billiardcounter.database.game_list.GameListLoader;
-import com.kms.billiardcounter.database.game_viewer.GameViewerModifier;
+import com.kms.billiardcounter.database.game_monitor.GameMonitorLoader;
+import com.kms.billiardcounter.database.game_monitor.GameMonitorModifier;
 import com.kms.billiardcounter.font.FontProvider;
 import com.kms.billiardcounter.support.NumericManufacturer;
 
-public class BilliardTableNumberControlPanel extends JPanel {
+public class TableNumberPanel extends JPanel {
 
-	public interface OnChangeNumberOfBilliardTableListener {
+	public interface OnChangeTableNumberListener {
 		
-		public void onChangeNumberOfBilliardTable();
+		public void onChangeTableNumber();
 		
 	}
 	
-	private OnChangeNumberOfBilliardTableListener onChangeNumberOfBilliardTableListener;
+	private OnChangeTableNumberListener onChangeTableNumberListener;
 	
-	public BilliardTableNumberControlPanel( int tableNumber, int row, int col, OnChangeNumberOfBilliardTableListener onChangeNumberOfBilliardTableListener ) {
+	public TableNumberPanel( int row, int col, OnChangeTableNumberListener onChangeTableNumberListener ) {
 		
 		initThisPanel();
 		
-		this.onChangeNumberOfBilliardTableListener = onChangeNumberOfBilliardTableListener;
+		this.onChangeTableNumberListener = onChangeTableNumberListener;
+		
+		int tableNumber = GameMonitorLoader.getTableNumber( row, col );
 		
 		if( tableNumber == 0 ){
 			
-			add( createGameTableNumberCreatePanel( tableNumber, row, col ) );
+			add( createGameMonitorCreatePanel( row, col ) );
 			
 		} else{
 			
-			add( createGameTableNumberDisplayAndDeleteLabel( tableNumber, row, col ) );
+			add( createTableNumberLabel( tableNumber, row, col ) );
 			
 		}
 		
@@ -58,15 +61,15 @@ public class BilliardTableNumberControlPanel extends JPanel {
 		
 	}
 	
-	private JLabel createGameTableNumberDisplayAndDeleteLabel( int tableNumber, int row, int col ) {
+	private JLabel createTableNumberLabel( int tableNumber, int row, int col ) {
 		
-		JLabel gameTableNumberLabel = new JLabel();			
+		JLabel tableNumberLabel = new JLabel();			
 		
-		gameTableNumberLabel.setFont( FontProvider.getDefaultFont() );
-		gameTableNumberLabel.setHorizontalAlignment( JLabel.CENTER );
-		gameTableNumberLabel.setText( tableNumber + "번 테이블" );
-		gameTableNumberLabel.setOpaque( true );
-		gameTableNumberLabel.addMouseListener( new MouseListener() {
+		tableNumberLabel.setFont( FontProvider.getDefaultFont() );
+		tableNumberLabel.setHorizontalAlignment( JLabel.CENTER );
+		tableNumberLabel.setText( tableNumber + "번 테이블" );
+		tableNumberLabel.setOpaque( true );
+		tableNumberLabel.addMouseListener( new MouseListener() {
 			
 			@Override
 			public void mouseReleased(MouseEvent e) {
@@ -124,14 +127,14 @@ public class BilliardTableNumberControlPanel extends JPanel {
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
 
-						if( GameViewerModifier.deleteGameViewer( tableNumber ) ) {
+						if( GameMonitorModifier.deleteGameViewer( tableNumber ) ) {
 							
-							BilliardTableNumberControlPanel.this.remove( gameTableNumberLabel );
-							BilliardTableNumberControlPanel.this.add( createGameTableNumberCreatePanel( tableNumber, row, col ) );
+							TableNumberPanel.this.remove( tableNumberLabel );
+							TableNumberPanel.this.add( createGameMonitorCreatePanel( row, col ) );
 							
 							tablePositionDeleteFrame.dispose();
 							
-							onChangeNumberOfBilliardTableListener.onChangeNumberOfBilliardTable();
+							onChangeTableNumberListener.onChangeTableNumber();
 							
 						}
 						
@@ -170,35 +173,35 @@ public class BilliardTableNumberControlPanel extends JPanel {
 			
 		} );
 		
-		return gameTableNumberLabel;
+		return tableNumberLabel;
 		
 	}
 	
-	private JPanel createGameTableNumberCreatePanel( int tableNumber, int row, int col ){
+	private JPanel createGameMonitorCreatePanel( int row, int col ){
 		
-		JPanel gameTableNumberCreatePanel = new JPanel();
+		JPanel gameMonitorCreatePanel = new JPanel();
 		
-		JTextField gameTableNumberInputTextField = new JTextField();
-		JButton gameTableNumberCreateButton = new JButton("생성");
+		JTextField tableNumberInputField = new JTextField();
+		JButton gameMonitorCreateButton = new JButton("생성");
 		
-		gameTableNumberInputTextField.setPreferredSize( new Dimension(200, 50) );
-		gameTableNumberInputTextField.setFont( FontProvider.getDefaultFont() );
-		gameTableNumberInputTextField.setHorizontalAlignment( JTextField.CENTER );
+		tableNumberInputField.setPreferredSize( new Dimension(200, 50) );
+		tableNumberInputField.setFont( FontProvider.getDefaultFont() );
+		tableNumberInputField.setHorizontalAlignment( JTextField.CENTER );
 		
-		gameTableNumberCreateButton.setPreferredSize( new Dimension(100, 50) );
-		gameTableNumberCreateButton.addActionListener( new ActionListener() {
+		gameMonitorCreateButton.setPreferredSize( new Dimension(100, 50) );
+		gameMonitorCreateButton.addActionListener( new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				int integerOfInputText = NumericManufacturer.getIntConsistingOnlyOfNumeric( gameTableNumberInputTextField.getText() );
+				int integerOfInputText = NumericManufacturer.getIntConsistingOnlyOfNumeric( tableNumberInputField.getText() );
 				
-				if( GameViewerModifier.saveNewGameViewer( integerOfInputText, row, col ) ){
+				if( GameMonitorModifier.saveNewGameViewer( integerOfInputText, row, col ) ){
 				
-					BilliardTableNumberControlPanel.this.remove( gameTableNumberCreatePanel );
-					BilliardTableNumberControlPanel.this.add( createGameTableNumberDisplayAndDeleteLabel( integerOfInputText, row, col ) );
+					TableNumberPanel.this.remove( gameMonitorCreatePanel );
+					TableNumberPanel.this.add( createTableNumberLabel( integerOfInputText, row, col ) );
 				
-					onChangeNumberOfBilliardTableListener.onChangeNumberOfBilliardTable();
+					onChangeTableNumberListener.onChangeTableNumber();
 				
 				}
 				
@@ -206,11 +209,11 @@ public class BilliardTableNumberControlPanel extends JPanel {
 			
 		} );
 		
-		gameTableNumberCreatePanel.setLayout( new BorderLayout() );
-		gameTableNumberCreatePanel.add( gameTableNumberInputTextField, BorderLayout.CENTER );
-		gameTableNumberCreatePanel.add( gameTableNumberCreateButton, BorderLayout.EAST );
+		gameMonitorCreatePanel.setLayout( new BorderLayout() );
+		gameMonitorCreatePanel.add( tableNumberInputField, BorderLayout.CENTER );
+		gameMonitorCreatePanel.add( gameMonitorCreateButton, BorderLayout.EAST );
 		
-		return gameTableNumberCreatePanel;
+		return gameMonitorCreatePanel;
 		
 	}
 	

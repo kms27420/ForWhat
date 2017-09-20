@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.kms.billiardcounter.database.game_list.GameListModifier;
-import com.kms.billiardcounter.database.game_viewer.GameViewerModifier;
+import com.kms.billiardcounter.database.game_monitor.GameMonitorModifier;
 import com.kms.billiardcounter.database.game_list.GameListLoader;
 import com.kms.billiardcounter.font.FontProvider;
 import com.kms.billiardcounter.support.NumericManufacturer;
@@ -299,7 +299,7 @@ public class PaymentFrame extends JFrame {
 					
 					PaymentFrame.this.dispose();
 					
-					if( GameViewerModifier.endUseThisGameViewer( tableNumber ) ) {
+					if( GameMonitorModifier.endUseThisGameMonitor( tableNumber ) ) {
 					
 						onPaymentCompleteListener.onPaymentComplete();
 					

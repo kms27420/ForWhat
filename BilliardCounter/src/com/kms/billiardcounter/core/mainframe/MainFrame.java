@@ -22,8 +22,8 @@ public class MainFrame extends JFrame{
 		
 		initThisFrame();
 		
-		add( createTitleAndMenuPanel(), BorderLayout.NORTH );
-		add( createGameViewerPanel(), BorderLayout.CENTER );
+		add( createOptionPanel(), BorderLayout.NORTH );
+		add( createGameMonitorPanel(), BorderLayout.CENTER );
 	
 		setVisible( true );
 		
@@ -43,30 +43,30 @@ public class MainFrame extends JFrame{
 		
 	}
 	
-	private JPanel createTitleAndMenuPanel(){
+	private JPanel createOptionPanel(){
 		
-		JPanel titleAndMenuPanel = new TitleAndMenuPanel();
+		JPanel optionPanel = new OptionPanel();
 		
 		Dimension panelSize = new Dimension( this.getPreferredSize().width, this.getPreferredSize().height / 4 );
 		
-		titleAndMenuPanel.setPreferredSize( panelSize );
+		optionPanel.setPreferredSize( panelSize );
 		
-		return titleAndMenuPanel;
+		return optionPanel;
 		
 	}
 	
-	private JScrollPane createGameViewerPanel(){
+	private JScrollPane createGameMonitorPanel(){
 		
-		JScrollPane gameViewerPanel = new JScrollPane( new GameViewerPanel() );
+		JScrollPane gameMonitorPanel = new JScrollPane( new GameMonitorPanel() );
 		
 		Dimension scrollPaneSize = new Dimension( this.getPreferredSize().width, this.getPreferredSize().height * 3 / 4 );
 		
-		gameViewerPanel.setPreferredSize( scrollPaneSize );
-		gameViewerPanel.getVerticalScrollBar().setUnitIncrement( 40 );
-		gameViewerPanel.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
-		gameViewerPanel.setOpaque( true );
+		gameMonitorPanel.setPreferredSize( scrollPaneSize );
+		gameMonitorPanel.getVerticalScrollBar().setUnitIncrement( 40 );
+		gameMonitorPanel.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
+		gameMonitorPanel.setOpaque( true );
 		
-		return gameViewerPanel;
+		return gameMonitorPanel;
 		
 	}
 }

@@ -28,9 +28,9 @@ import com.kms.billiardcounter.font.FontProvider;
  *
  */
 
-public class TitleAndMenuPanel extends JPanel{
+public class OptionPanel extends JPanel{
 	
-	public TitleAndMenuPanel(){
+	public OptionPanel(){
 		
 		initThisPanel();
 		
@@ -66,15 +66,12 @@ public class TitleAndMenuPanel extends JPanel{
 		
 		JPanel componentsPanel = new JPanel();
 		
-		JTextField searchWordInputTextField = new JTextField();
+		JTextField searchSentenceField = new JTextField();
 		
-		final String BUTTON_NAME = "검색하기";
+		JButton searchButton = new JButton( "검색하기" );
 		
-		JButton searchButton = new JButton( BUTTON_NAME );
-		
-		searchWordInputTextField.setPreferredSize( new Dimension(200, 50) );
-		searchWordInputTextField.setFont( FontProvider.getDefaultFont() );
-		
+		searchSentenceField.setPreferredSize( new Dimension(200, 50) );
+		searchSentenceField.setFont( FontProvider.getDefaultFont() );
 		
 		searchButton.setPreferredSize( new Dimension(100, 50) );
 		searchButton.setFont( FontProvider.getDefaultFont() );
@@ -83,28 +80,21 @@ public class TitleAndMenuPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new SearchResultFrame( searchWordInputTextField.getText() );
+				new SearchResultFrame( searchSentenceField.getText() );
 			
 			}
 			
 		} );
 		
+		componentsPanel.setPreferredSize( new Dimension( 0, 50 ) );
 		componentsPanel.setLayout( new BorderLayout() );
-		componentsPanel.add( searchWordInputTextField, BorderLayout.CENTER );
+		componentsPanel.add( searchSentenceField, BorderLayout.CENTER );
 		componentsPanel.add( searchButton, BorderLayout.EAST );
 		
-		int dividingLineNumber = 4;
-		
 		gameSearchPanel.setPreferredSize( new Dimension(300, 50) );
-		gameSearchPanel.setLayout( new GridLayout( dividingLineNumber, 1 ) );
+		gameSearchPanel.setLayout( new BorderLayout() );
 		
-		for( int panelNum = 0; panelNum < dividingLineNumber - 1; panelNum++ ){
-			
-			gameSearchPanel.add( new JPanel() );
-			
-		}
-		
-		gameSearchPanel.add( componentsPanel );
+		gameSearchPanel.add( componentsPanel, BorderLayout.SOUTH );
 		
 		return gameSearchPanel;
 		
@@ -168,7 +158,7 @@ public class TitleAndMenuPanel extends JPanel{
 			
 		} );
 		
-		menuPanel.setPreferredSize( new Dimension(300, 50) );
+		menuPanel.setPreferredSize( new Dimension(300, 0) );
 		menuPanel.setLayout( new GridLayout( 3, 1 ) );
 		
 		menuPanel.add( passwordChangeButton );

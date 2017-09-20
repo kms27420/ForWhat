@@ -123,19 +123,19 @@ public class GameListModifier {
 	 * 
 	 * 계산을 아직 하지 않은 게임의 정보 중 table_number를 변경해주는 매서드
 	 * 
-	 * @param beforeTableNumber 변경하고자 하는 table의 번호
-	 * @param afterTableNumber 이 번호로 table_number을 변경함
+	 * @param activatedTableNumber 변경하고자 하는 table의 번호
+	 * @param confirmTableNumber 이 번호로 table_number을 변경함
 	 * @return update가 제대로 실행되면 true, 그렇지 않으면 false
 	 */
-	public static final boolean replaceNonPaidGamesTableNumber( int beforeTableNumber, int afterTableNumber ) {
+	public static final boolean replaceGameMonitorData( int activatedTableNumber, int confirmTableNumber ) {
 		
 		try {
 			
 			Connection conn = BilliardCounterConnector.getConnection();
 			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_LIST "
-					+ "SET TABLE_NUMBER = " + afterTableNumber
-					+ " WHERE TABLE_NUMBER = " + beforeTableNumber + " AND IS_PAID = FALSE;";
+					+ "SET TABLE_NUMBER = " + confirmTableNumber
+					+ " WHERE TABLE_NUMBER = " + activatedTableNumber + " AND IS_PAID = FALSE;";
 			
 			stmt.executeUpdate( sql );
 			

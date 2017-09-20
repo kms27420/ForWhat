@@ -1,4 +1,4 @@
-package com.kms.billiardcounter.database.game_viewer;
+package com.kms.billiardcounter.database.game_monitor;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -8,15 +8,15 @@ import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
 
 /**
  * 
- * 데이터베이스 GAME_VIEWER 테이블의 내용을 원하는 형태로 불러오는 클래스
+ * 데이터베이스 GAME_MONITOR 테이블의 내용을 원하는 형태로 불러오는 클래스
  * 
  * @author Kwon
  *
  */
 
-public class GameViewerLoader {
+public class GameMonitorLoader {
 	
-	private GameViewerLoader(){}
+	private GameMonitorLoader(){}
 	
 	/**
 	 * 위치 정보를 통해 당구 테이블의 번호를 반환하는 매서드
@@ -31,7 +31,7 @@ public class GameViewerLoader {
 		try{
 			
 			String sql = "SELECT TABLE_NUMBER "
-					+ "FROM BILLIARD_COUNTER.GAME_VIEWER "
+					+ "FROM BILLIARD_COUNTER.GAME_MONITOR "
 					+ "WHERE TABLE_ROW = " + tableRow + " AND TABLE_COL = " + tableCol + ";";
 			
 			Connection conn = BilliardCounterConnector.getConnection();
@@ -61,7 +61,7 @@ public class GameViewerLoader {
 	
 	/**
 	 * 
-	 * tableNumber의 당구대 뷰어가 사용중인지를 받아오는 매서드
+	 * tableNumber의 당구대 모니터가 사용중인지를 받아오는 매서드
 	 * 
 	 * @param tableNumber 사용 중인지 알고 싶은 당구대의 번호
 	 * @return 사용중이면 true, 그렇지 않으면 false
@@ -73,7 +73,7 @@ public class GameViewerLoader {
 			Connection conn = BilliardCounterConnector.getConnection();
 			Statement stmt = conn.createStatement();
 			String sql = "SELECT IS_IN_USE "
-					+ "FROM billiard_counter.GAME_VIEWER "
+					+ "FROM billiard_counter.GAME_MONITOR "
 					+ "WHERE TABLE_NUMBER = " + tableNumber + ";";
 			
 			ResultSet rs = stmt.executeQuery( sql );
@@ -82,7 +82,7 @@ public class GameViewerLoader {
 			
 			while( rs.next() ) {
 				
-				isInUse =  rs.getBoolean( "IS_IN_USED" );
+				isInUse =  rs.getBoolean( "IS_IN_USE" );
 				
 			}
 			
@@ -104,27 +104,27 @@ public class GameViewerLoader {
 	
 	/**
 	 * 
-	 * 현재 사용중이지 않은 당구대 뷰어가 있는지 판단해주는 매서드
+	 * 현재 사용중이지 않은 당구대 모니터가 있는지 판단해주는 매서드
 	 * 
-	 * @return 사용중이지 않은 당구대 뷰어가 있다면 true, 그렇지 않다면 false
+	 * @return 사용중이지 않은 당구대 모니터가 있다면 true, 그렇지 않다면 false
 	 */
-	public static final boolean getIsThereUnusedGameViewer() {
+	public static final boolean getIsThereUnusedGameMonitor() {
 		
 		try {
 			
 			Connection conn = BilliardCounterConnector.getConnection();
 			Statement stmt = conn.createStatement();
-			String sql = "SELECT COUNT(TABLE_NUMBER) AS UNUSED_GAME_VIEWER_COUNT "
-					+ "FROM billiard_counter.GAME_VIEWER "
+			String sql = "SELECT COUNT(TABLE_NUMBER) AS UNUSED_GAME_MONITOR_COUNT "
+					+ "FROM billiard_counter.GAME_MONITOR "
 					+ "WHERE IS_IN_USE = FALSE;";
 			
 			ResultSet rs = stmt.executeQuery( sql );
 			
-			int unusedGameViewerCount = 0;
+			int unusedGameMonitorCount = 0;
 			
 			while( rs.next() ) {
 				
-				unusedGameViewerCount = rs.getInt( "UNUSED_GAME_VIEWER_COUNT" );
+				unusedGameMonitorCount = rs.getInt( "UNUSED_GAME_MONITOR_COUNT" );
 				
 			}
 			
@@ -132,7 +132,7 @@ public class GameViewerLoader {
 			stmt.close();
 			conn.close();
 			
-			if( unusedGameViewerCount > 0 )	return true;
+			if( unusedGameMonitorCount > 0 )	return true;
 			
 			return false;
 			

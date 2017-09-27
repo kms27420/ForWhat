@@ -1,10 +1,12 @@
-package com.kms.billiardcounter.core.mainframe;
+package com.kms.billiardcounter.panel;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+
+import com.kms.billiardcounter.monitor.GameMonitor;
 
 /**
  * 
@@ -16,7 +18,7 @@ import javax.swing.JPanel;
 
 public class GameMonitorPanel extends JPanel{
 	
-	private class Matrix {
+	private class GameMonitorMatrix {
 		
 		private static final int MAX_ROW = 4;
 		private static final int MAX_COL = 4;
@@ -33,8 +35,8 @@ public class GameMonitorPanel extends JPanel{
 	
 	private void initThisPanel() {
 		
-		setPreferredSize( new Dimension( 0, 385 * Matrix.MAX_ROW ) );
-		setLayout( new GridLayout( Matrix.MAX_ROW, Matrix.MAX_COL ) );
+		setPreferredSize( new Dimension( 0, 385 * GameMonitorMatrix.MAX_ROW ) );
+		setLayout( new GridLayout( GameMonitorMatrix.MAX_ROW, GameMonitorMatrix.MAX_COL ) );
 		
 	}
 	
@@ -52,9 +54,9 @@ public class GameMonitorPanel extends JPanel{
 		
 		ArrayList<JPanel> gameMonitorList = new ArrayList<JPanel>();
 		
-		for(int row = 0; row < Matrix.MAX_ROW; row++){
+		for(int row = 0; row < GameMonitorMatrix.MAX_ROW; row++){
 			
-			for(int col = 0; col < Matrix.MAX_COL; col++){
+			for(int col = 0; col < GameMonitorMatrix.MAX_COL; col++){
 				
 				gameMonitorList.add( new GameMonitor(row, col) );
 				

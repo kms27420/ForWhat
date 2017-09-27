@@ -1,4 +1,4 @@
-package com.kms.billiardcounter.support.gamefeeinfo;
+package com.kms.billiardcounter.support;
 
 /**
  * 

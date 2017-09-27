@@ -1,9 +1,6 @@
 package com.kms.billiardcounter.database.base_fee;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.database.connection.DatabaseConnector;
 import com.kms.billiardcounter.support.BaseFeeInfo;
 
 /**
@@ -16,18 +13,6 @@ import com.kms.billiardcounter.support.BaseFeeInfo;
 public class BaseFeeModifier {
 
 	private BaseFeeModifier() {}
-	
-	private static void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
-		
-		stmt.execute(
-				"CREATE TABLE IF NOT EXISTS billiard_counter.BASE_FEE("
-				+ "BASE_FEE_PER_MINUTE INT(4) NOT NULL,"
-				+ "BASE_FEE_TIME INT(3) NOT NULL,"
-				+ "FEE_INCREASE_TIME INT(3) NOT NULL,"
-				+ "PRIMARY KEY(BASE_FEE_PER_MINUTE, BASE_FEE_TIME, FEE_INCREASE_TIME));"
-				);
-		
-	}
 	
 	/**
 	 * 
@@ -48,23 +33,16 @@ public class BaseFeeModifier {
 				
 			}
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "INSERT INTO billiard_counter.BASE_FEE "
 					+ "VALUES(" + baseFeeInfo.getBaseFeePerMinute() + ", " + baseFeeInfo.getBaseFeeTime() + ", " + baseFeeInfo.getFeeIncreaseTime() + ");";
 			
-			createTableIfNotExists( conn, stmt );
-			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
 		} catch( Exception e ) {
 			
-			// e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			
@@ -89,25 +67,20 @@ public class BaseFeeModifier {
 				
 			}
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "DELETE FROM billiard_counter.BASE_FEE;";
 			
-			stmt.executeUpdate( sql );
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			sql = "INSERT INTO billiard_counter.BASE_FEE "
 					+ "VALUES(" + baseFeeInfo.getBaseFeePerMinute() + ", " + baseFeeInfo.getBaseFeeTime() + ", " + baseFeeInfo.getFeeIncreaseTime() + ");";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
 		} catch( Exception e ) {
 			
-			// e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			

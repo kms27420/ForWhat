@@ -1,7 +1,8 @@
-package com.kms.billiardcounter.core.ancillaryframe;
+package com.kms.billiardcounter.frame;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +15,8 @@ import javax.swing.JPasswordField;
 
 import com.kms.billiardcounter.database.account.AccountModifier;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.size.DeviceSize;
+import com.kms.billiardcounter.size.FrameSize;
 
 /**
  * 
@@ -24,28 +27,21 @@ import com.kms.billiardcounter.font.FontProvider;
  */
 public class PasswordChangeFrame extends JFrame {
 
-	public PasswordChangeFrame() {
-		
-		initThisFrame();
-		
-		add( createPasswordChangePanel() );
-		
-		setVisible( true );
-		
-	}
+	private static final PasswordChangeFrame INSTANCE = new PasswordChangeFrame();
 	
-	private void initThisFrame() {
+	private PasswordChangeFrame() {
 		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = new Dimension( 400, 300 );
+		setPreferredSize( FrameSize.getPasswordChangeFrameSize() );
+		pack();
+		setLocation( ( DeviceSize.getScreenSize().width - FrameSize.getPasswordChangeFrameSize().width ) / 2, 
+				( DeviceSize.getScreenSize().height - FrameSize.getPasswordChangeFrameSize().height ) / 2 );
+		setResizable( false );
 		
 		setTitle( "비밀번호 변경" );
-		
-		setLayout( new GridLayout( 1, 1 ) );
-		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2);
-		setSize( frameSize );
-		
 		setDefaultCloseOperation( DISPOSE_ON_CLOSE );
+		
+		getContentPane().setLayout( new GridLayout( 1, 1 ) );
+		getContentPane().add( createPasswordChangePanel() );
 		
 	}
 	
@@ -90,34 +86,20 @@ public class PasswordChangeFrame extends JFrame {
 				
 				} else {
 					
-					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-					Dimension frameSize = new Dimension( 400, 200 );
-					
-					JFrame alertFrame = new JFrame( "비밀번호 재확인 요망" );
-					
-					JLabel alertLabel = new JLabel();
+					String alertSentence;
 					
 					if( inputedPassword.length() < passwordMinLength || inputedPassword.length() > passwordMaxLength ) {
 						
-						alertLabel.setText( "비밀번호를 " + passwordMinLength + "~" + passwordMaxLength + " 자리로 설정해주십시오." );
+						alertSentence = "비밀번호를 " + passwordMinLength + "~" + passwordMaxLength + " 자리로 설정해주십시오.";
 						
-					} else	alertLabel.setText( "입력한 두 비밀번호가 일치하도록 입력해주세요." );
+					} else	alertSentence = "입력한 두 비밀번호가 일치하도록 입력해주세요.";
 					
-					alertLabel.setHorizontalAlignment( JLabel.CENTER );
-					alertLabel.setFont( FontProvider.getDefaultFont() );
-					
-					alertFrame.setLayout( new GridLayout( 1, 1 ) );
-					alertFrame.setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
-					alertFrame.setSize( frameSize );
-					alertFrame.setResizable( false );
-					
-					alertFrame.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
-					
-					alertFrame.add( alertLabel );
-					
-					alertFrame.setVisible( true );
+					AlertFrame.showOnScreen( "비밀번호 재확인 요망", alertSentence, null );
 					
 				}
+				
+				passwordInputField.setText( "" );
+				passwordReInputField.setText( "" );
 				
 			}
 			
@@ -133,6 +115,12 @@ public class PasswordChangeFrame extends JFrame {
 		passwordChangePanel.add( confirmButton );
 		
 		return passwordChangePanel;
+		
+	}
+	
+	public static void showOnScreen() {
+		
+		INSTANCE.setVisible( true );
 		
 	}
 	

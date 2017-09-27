@@ -1,6 +1,6 @@
 package com.kms.billiardcounter.execution;
 
-import com.kms.billiardcounter.core.ancillaryframe.LoginFrame;
+import com.kms.billiardcounter.frame.LoginFrame;
 
 /**
  * 
@@ -13,7 +13,7 @@ public class Execution {
 	
 	public static void main(String[] args) {
 		
-		new LoginFrame();
+		LoginFrame.showOnScreen();
 		
 	}
 	

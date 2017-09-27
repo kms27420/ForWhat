@@ -1,9 +1,6 @@
 package com.kms.billiardcounter.database.game_monitor;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.database.connection.DatabaseConnector;
 
 /**
  * 
@@ -16,18 +13,6 @@ public class GameMonitorModifier {
 	
 	private GameMonitorModifier(){}
 	
-	private static final void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
-		
-		stmt.execute(
-				"CREATE TABLE IF NOT EXISTS billiard_counter.GAME_MONITOR("
-				+ "TABLE_NUMBER INT(11) PRIMARY KEY NOT NULL,"
-				+ "TABLE_ROW INT(11) NOT NULL,"
-				+ "TABLE_COL INT(11) NOT NULL,"
-				+ "IS_IN_USE BOOLEAN NOT NULL);"
-				);
-		
-	}
-	
 	/**
 	 * 
 	 * 새로 생성된 GameMonitor를 저장해주는 매서드
@@ -37,27 +22,21 @@ public class GameMonitorModifier {
 	 * @param col 당구대의 col위치
 	 * @return 저장 작업이 정상적으로 수행되면 true, 그렇지 않으면 false
 	 */
-	public static final boolean saveNewGameViewer( int tableNumber, int row, int col ){
+	public static final boolean saveNewGameMonitor( int tableNumber, int row, int col ){
+		
+		if( tableNumber <= 0 )	return false;
 		
 		try{
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
-			String sql;
+			String sql = "INSERT INTO billiard_counter.GAME_MONITOR VALUES(" + tableNumber + ", " + row + ", " + col + ", FALSE);";
 			
-			createTableIfNotExists( conn, stmt );
-			
-			sql = "INSERT INTO billiard_counter.GAME_MONITOR VALUES(" + tableNumber + ", " + row + ", " + col + ", FALSE);";
-			stmt.executeUpdate(sql);
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate(sql);
 			
 			return true;
 			
 		}catch(Exception e){
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			
@@ -72,19 +51,14 @@ public class GameMonitorModifier {
 	 * @param tableNumber 삭제하고자하는 당구대의 번호
 	 * @return 삭제 작업이 정상적으로 처리되면 true, 그렇지 않으면 false
 	 */
-	public static final boolean deleteGameViewer( int tableNumber ) {
+	public static final boolean deleteGameMonitor( int tableNumber ) {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "DELETE FROM billiard_counter.GAME_MONITOR "
 						+ "WHERE TABLE_NUMBER = " + tableNumber + ";";
 			
-			stmt.executeUpdate(sql);
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate(sql);
 			
 			return true;
 			
@@ -109,22 +83,17 @@ public class GameMonitorModifier {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_MONITOR "
 					+ "SET IS_IN_USE = TRUE "
 					+ "WHERE TABLE_NUMBER = " + tableNumber + ";";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
 		} catch( Exception e ) {
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			
@@ -143,22 +112,17 @@ public class GameMonitorModifier {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_MONITOR "
 					+ "SET IS_IN_USE = FALSE "
 					+ "WHERE TABLE_NUMBER = " + tableNumber + ";";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
 		} catch( Exception e ) {
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			

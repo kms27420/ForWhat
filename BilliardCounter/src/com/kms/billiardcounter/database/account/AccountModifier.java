@@ -1,9 +1,6 @@
 package com.kms.billiardcounter.database.account;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.database.connection.DatabaseConnector;
 
 /**
  * 
@@ -22,17 +19,6 @@ public class AccountModifier {
 	
 	private AccountModifier() {}
 	
-	private static void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
-		
-		stmt.execute(
-				"CREATE TABLE IF NOT EXISTS billiard_counter.ACCOUNT("
-				+ "ID VARCHAR(" + ID_MAX_LENGTH + ") NOT NULL,"
-				+ "PASSWORD VARCHAR(" + PASSWORD_MAX_LENGTH + ") NOT NULL,"
-				+ "PRIMARY KEY(ID));"
-				);
-		
-	}
-	
 	/**
 	 * 
 	 * 데이터베이스의 ACCOUNT 테이블에 id, password를 저장하는 매서드
@@ -45,17 +31,10 @@ public class AccountModifier {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "INSERT INTO billiard_counter.ACCOUNT "
 					+ "VALUES('" + id + "', '" + password + "');";
 			
-			createTableIfNotExists( conn, stmt );
-			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
@@ -80,15 +59,10 @@ public class AccountModifier {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.ACCOUNT "
 					+ "SET PASSWORD = '" + password + "';";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			

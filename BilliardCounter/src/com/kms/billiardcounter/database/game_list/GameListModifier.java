@@ -1,10 +1,7 @@
 package com.kms.billiardcounter.database.game_list;
 
-import java.sql.Connection;
-import java.sql.Statement;
-
-import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
-import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
+import com.kms.billiardcounter.database.connection.DatabaseConnector;
+import com.kms.billiardcounter.support.GameFeeInfo;
 
 /**
  * 
@@ -17,23 +14,6 @@ public class GameListModifier {
 	
 	private GameListModifier(){}
 	
-	private static void createTableIfNotExists( Connection conn, Statement stmt ) throws Exception{
-		
-		stmt.execute(
-				"CREATE TABLE IF NOT EXISTS billiard_counter.GAME_LIST("
-				+ "DATE VARCHAR(6) NOT NULL,"
-				+ "START_TIME VARCHAR(8) NOT NULL,"
-				+ "END_TIME VARCHAR(8) NOT NULL,"
-				+ "GAME_NUMBER INT(11) NOT NULL,"
-				+ "TABLE_NUMBER INT(11) NOT NULL,"
-				+ "USED_TIME INT(11) NOT NULL,"
-				+ "FEE INT(11) NOT NULL,"
-				+ "IS_PAID BOOLEAN NOT NULL,"
-				+ "PRIMARY KEY(DATE, START_TIME, GAME_NUMBER, TABLE_NUMBER));"
-				);
-		
-	}
-	
 	/**
 	 * 
 	 * GameFeeInfo를 본 프로그램의 DB에 저장하는 매서드
@@ -44,12 +24,6 @@ public class GameListModifier {
 	public static final boolean saveGameFeeInfoToDB( GameFeeInfo gameFeeInfo ){
 		
 		try{
-			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
-			String sql;
-			
-			createTableIfNotExists( conn, stmt );
 			
 			String date, startTime, endTime;
 			int gameNumber, tableNumber, usedTime, fee;
@@ -64,20 +38,17 @@ public class GameListModifier {
 			fee = gameFeeInfo.getFee();
 			isPaid = gameFeeInfo.getIsPaid();
 				
-			sql = "INSERT INTO billiard_counter.GAME_LIST "
+			String sql = "INSERT INTO billiard_counter.GAME_LIST "
 					+ "VALUES('" + date + "', '" + startTime + "', '" + endTime + "', " 
 			+ gameNumber + ", " + tableNumber + ", " + usedTime + ", " + fee + ", " + isPaid + ");";
 				
-			stmt.executeUpdate(sql);
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate(sql);
 			
 			return true;
 			
 		}catch(Exception e){
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 		
 			return false;
 			
@@ -96,22 +67,17 @@ public class GameListModifier {
 		
 		try{
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_LIST "
 					+ "SET IS_PAID = TRUE "
 					+ "WHERE TABLE_NUMBER = " + tableNumber + " AND GAME_NUMBER = " + gameNumber + ";";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
 		}catch(Exception e){
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			
@@ -131,16 +97,11 @@ public class GameListModifier {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_LIST "
 					+ "SET TABLE_NUMBER = " + confirmTableNumber
 					+ " WHERE TABLE_NUMBER = " + activatedTableNumber + " AND IS_PAID = FALSE;";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
@@ -166,23 +127,18 @@ public class GameListModifier {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "UPDATE billiard_counter.GAME_LIST "
 					+ "SET FEE = " + changedFee
 					+ " WHERE DATE = '" + gameFeeInfo.getDate() + "' AND START_TIME = '" + gameFeeInfo.getStartTime() 
 					+ "' AND TABLE_NUMBER = " + gameFeeInfo.getTableNumber() + " AND GAME_NUMBER = " + gameFeeInfo.getGameNumber() + ";";
 			
-			stmt.executeUpdate( sql );
-			
-			stmt.close();
-			conn.close();
+			DatabaseConnector.getStatement().executeUpdate( sql );
 			
 			return true;
 			
 		} catch( Exception e ) {
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			
 			return false;
 			

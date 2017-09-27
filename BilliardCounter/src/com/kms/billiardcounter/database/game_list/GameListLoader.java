@@ -1,14 +1,12 @@
 package com.kms.billiardcounter.database.game_list;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 
-import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.database.connection.DatabaseConnector;
+import com.kms.billiardcounter.support.GameFeeInfo;
 import com.kms.billiardcounter.support.SearchKey;
 import com.kms.billiardcounter.support.TotalFeeInfo;
-import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 
 /**
  * 
@@ -22,6 +20,44 @@ public class GameListLoader {
 
 	private GameListLoader(){}
 	
+	/**
+	 * 
+	 * 해당 당구대에 계산이 안된 게임이 있는지를 판별하는 매서드
+	 * 
+	 * @param tableNumber 확인하고자 하는 당구대의 번호
+	 * @return 계산 안된 게임이 존재하면 true, 그렇지 않으면 false
+	 */
+	public static final boolean getIsThereNonPaidGames( int tableNumber ) {
+		
+		try {
+			
+			String sql = "SELECT COUNT(TABLE_NUMBER) AS COUNT "
+					+ "FROM billiard_counter.GAME_LIST "
+					+ "WHERE TABLE_NUMBER = " + tableNumber + " AND IS_PAID = FALSE;";
+			
+			ResultSet rs = DatabaseConnector.getStatement().executeQuery(sql);
+			
+			boolean isThereNonPaidGames = false;
+			
+			if( rs.next() ) {
+				
+				if( rs.getInt( "COUNT" ) > 0 )	isThereNonPaidGames = true;
+				
+			}
+			
+			rs.close();
+			
+			return isThereNonPaidGames;
+			
+		} catch( Exception e ) {
+			
+			e.printStackTrace();
+			
+			return false;
+			
+		}
+		
+	}
 	/**
 	 * 
 	 * tableNumber에 해당하며 아직 계산되지 않은 GameList들을 GameFeeInfo 리스트로 반환하는 매서드
@@ -38,10 +74,8 @@ public class GameListLoader {
 			String sql = "SELECT * "
 					+ "FROM billiard_counter.GAME_LIST "
 					+ "WHERE TABLE_NUMBER = " + tableNumber + " AND IS_PAID = FALSE;";
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			
-			ResultSet rs = stmt.executeQuery(sql);
+			ResultSet rs = DatabaseConnector.getStatement().executeQuery(sql);
 			
 			while( rs.next() ){
 				
@@ -61,12 +95,10 @@ public class GameListLoader {
 			}	
 			
 			rs.close();
-			stmt.close();
-			conn.close();
 			
 		}catch(Exception e){ 
 			
-			//e.printStackTrace(); 
+			e.printStackTrace(); 
 			
 		}
 		
@@ -87,22 +119,11 @@ public class GameListLoader {
 			
 			TotalFeeInfo totalFeeInfo;
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
-			
-			String sql = "SELECT * "
+			String sql = "SELECT SUM(USED_TIME) AS TOTAL_USED_TIME, SUM(FEE) AS TOTAL_FEE "
 					+ "FROM billiard_counter.GAME_LIST "
 					+ "WHERE TABLE_NUMBER = " + tableNumber + " AND IS_PAID = FALSE;";
 			
-			ResultSet rs = stmt.executeQuery( sql );
-			
-			if( !rs.next() )	return new TotalFeeInfo();
-			
-			sql = "SELECT SUM(USED_TIME) AS TOTAL_USED_TIME, SUM(FEE) AS TOTAL_FEE "
-					+ "FROM billiard_counter.GAME_LIST "
-					+ "WHERE TABLE_NUMBER = " + tableNumber + " AND IS_PAID = FALSE;";
-			
-			rs = stmt.executeQuery(sql);
+			ResultSet rs = DatabaseConnector.getStatement().executeQuery( sql );
 			
 			if( rs.next() ) {
 				
@@ -118,14 +139,12 @@ public class GameListLoader {
 			}
 			
 			rs.close();
-			stmt.close();
-			conn.close();
 			
 			return totalFeeInfo;
 			
 		} catch(Exception e){
 			
-			// e.printStackTrace();
+			e.printStackTrace();
 			
 			return new TotalFeeInfo();
 			
@@ -146,27 +165,23 @@ public class GameListLoader {
 		
 		try {
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "SELECT SUM(FEE) AS TOTAL_SALES "
 					+ "FROM billiard_counter.GAME_LIST "
 					+ "WHERE DATE = '" + date + "' AND IS_PAID = 1;";
 			
-			ResultSet rs = stmt.executeQuery( sql );
+			ResultSet rs = DatabaseConnector.getStatement().executeQuery( sql );
 			
-			while( rs.next() ){
+			if( rs.next() ){
 				
 				daySales = rs.getInt( "TOTAL_SALES" );
 				
 			}
 			
 			rs.close();
-			stmt.close();
-			conn.close();
 			
 		} catch( Exception e ) {
 			
-			 //e.printStackTrace();
+			 e.printStackTrace();
 			
 		}
 		
@@ -189,14 +204,11 @@ public class GameListLoader {
 		
 		try{
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
-			
 			String sql = "SELECT * "
 					+ "FROM billiard_counter.GAME_LIST "
 					+ "WHERE DATE = '" + searchKey.getDate() + "' AND TABLE_NUMBER = " + searchKey.getTableNumber() + ";";
 			
-			ResultSet rs = stmt.executeQuery( sql );
+			ResultSet rs = DatabaseConnector.getStatement().executeQuery( sql );
 			
 			while( rs.next() ){
 				
@@ -216,8 +228,6 @@ public class GameListLoader {
 			}
 			
 			rs.close();
-			stmt.close();
-			conn.close();
 			
 		}catch(Exception e){
 			

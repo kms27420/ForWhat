@@ -1,8 +1,7 @@
-package com.kms.billiardcounter.core.ancillaryframe;
+package com.kms.billiardcounter.frame;
 
-import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
+import java.awt.Point;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -12,6 +11,8 @@ import javax.swing.JPanel;
 
 import com.kms.billiardcounter.database.game_list.GameListLoader;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.size.DeviceSize;
+import com.kms.billiardcounter.size.FrameSize;
 
 /**
  * 
@@ -22,29 +23,20 @@ import com.kms.billiardcounter.font.FontProvider;
  */
 public class DayTotalSalesFrame extends JFrame {
 
-	public DayTotalSalesFrame() {
-		
-		initThisFrame();
-		
-		add( createDayTotalSalesPanel() ); 
-		
-		setVisible( true );
-		
-	}
+	private static final DayTotalSalesFrame INSTANCE = new DayTotalSalesFrame();
 	
-	private void initThisFrame() {
+	private DayTotalSalesFrame() {
 		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = new Dimension( 500, 400 );
+		setPreferredSize( FrameSize.getDayTotalSalesFrameSize() );
+		pack();
+		setLocation( ( DeviceSize.getScreenSize().width - FrameSize.getDayTotalSalesFrameSize().width ) / 2, 
+				( DeviceSize.getScreenSize().height - FrameSize.getDayTotalSalesFrameSize().height ) / 2 );
+		setResizable( false );
 		
 		setTitle( "금일 매출" );
-		
-		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
-		setSize( frameSize );
-		
-		setLayout( new GridLayout( 1, 1 ) );
-		
 		setDefaultCloseOperation( DISPOSE_ON_CLOSE );
+		
+		getContentPane().setLayout( new GridLayout( 1, 1 ) );
 		
 	}
 	
@@ -66,6 +58,15 @@ public class DayTotalSalesFrame extends JFrame {
 		daySalesPanel.add( daySalesLabel );
 		
 		return daySalesPanel;
+		
+	}
+	
+	public static void showOnScreen() {
+		
+		INSTANCE.getContentPane().removeAll();
+		INSTANCE.getContentPane().add( INSTANCE.createDayTotalSalesPanel() ); 
+		
+		INSTANCE.setVisible( true );
 		
 	}
 	

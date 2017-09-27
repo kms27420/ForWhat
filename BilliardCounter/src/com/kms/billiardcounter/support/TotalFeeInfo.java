@@ -16,7 +16,15 @@ public class TotalFeeInfo {
 		this.usedTime = usedTime;
 		this.fee = fee;
 		
-		isValid = true;
+		if( NumericManufacturer.getIntConsistingOnlyOfNumeric( usedTime ) == 0 || NumericManufacturer.getIntConsistingOnlyOfNumeric( fee ) == 0 ) {
+			
+			isValid = false;
+			
+		} else {
+		
+			isValid = true;
+		
+		}
 		
 	}
 	

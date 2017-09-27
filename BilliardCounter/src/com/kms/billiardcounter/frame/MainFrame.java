@@ -1,12 +1,17 @@
-package com.kms.billiardcounter.core.mainframe;
+package com.kms.billiardcounter.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Toolkit;
+import java.awt.Point;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+
+import com.kms.billiardcounter.panel.GameMonitorPanel;
+import com.kms.billiardcounter.panel.OptionPanel;
+import com.kms.billiardcounter.size.DeviceSize;
+import com.kms.billiardcounter.size.FrameSize;
 
 /**
  * 
@@ -18,28 +23,22 @@ import javax.swing.JScrollPane;
 
 public class MainFrame extends JFrame{
 	
-	public MainFrame(){
-		
-		initThisFrame();
-		
-		add( createOptionPanel(), BorderLayout.NORTH );
-		add( createGameMonitorPanel(), BorderLayout.CENTER );
+	private static final MainFrame INSTANCE = new MainFrame();
 	
-		setVisible( true );
+	private MainFrame(){
 		
-	}
-	
-	private void initThisFrame() {
-		
-		Dimension windowSize = Toolkit.getDefaultToolkit().getScreenSize();
-		
-		setLocation(0, 0);
-		setPreferredSize( windowSize );
-		setSize( windowSize );
-		
-		setLayout( new BorderLayout() );
+		setPreferredSize( FrameSize.getMainFrameSize() );
+		pack();
+		setLocation( ( DeviceSize.getWindowSize().width - FrameSize.getMainFrameSize().width ) / 2, 
+				( DeviceSize.getWindowSize().height - FrameSize.getMainFrameSize().height ) / 2 );
 		setResizable( false );
+		
+		setTitle( "당구장 프로그램" );
 		setDefaultCloseOperation( EXIT_ON_CLOSE );
+		
+		getContentPane().setLayout( new BorderLayout() );
+		getContentPane().add( createOptionPanel(), BorderLayout.NORTH );
+		getContentPane().add( createGameMonitorPanel(), BorderLayout.CENTER );
 		
 	}
 	
@@ -64,9 +63,15 @@ public class MainFrame extends JFrame{
 		gameMonitorPanel.setPreferredSize( scrollPaneSize );
 		gameMonitorPanel.getVerticalScrollBar().setUnitIncrement( 40 );
 		gameMonitorPanel.setHorizontalScrollBarPolicy( JScrollPane.HORIZONTAL_SCROLLBAR_NEVER );
-		gameMonitorPanel.setOpaque( true );
 		
 		return gameMonitorPanel;
 		
 	}
+	
+	public static void showOnScreen() {
+		
+		INSTANCE.setVisible( true );
+		
+	}
+	
 }

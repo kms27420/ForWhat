@@ -1,56 +1,48 @@
-package com.kms.billiardcounter.core.ancillaryframe;
+package com.kms.billiardcounter.frame;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
-import com.kms.billiardcounter.core.mainframe.MainFrame;
 import com.kms.billiardcounter.database.account.AccountCheck;
 import com.kms.billiardcounter.database.account.AccountModifier;
 import com.kms.billiardcounter.database.base_fee.BaseFeeLoader;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.size.DeviceSize;
+import com.kms.billiardcounter.size.FrameSize;
 
 public class LoginFrame extends JFrame {
 
-	public LoginFrame() {
-		
-		initThisFrame();
-		
-		if( AccountCheck.isThereAccountInDB() ) {
-		
-			setTitle( "로그인" );
-			add( createLoginPanel() );
-		
-		} else {
-			
-			setTitle( "계정 생성" );
-			add( createAccountCreatePanel() );
-			
-		}
-		
-		setVisible( true );
-		
-	}
+	private JPanel loginPanel;
+	private JPanel accountCreatePanel;
 	
-	private void initThisFrame() {
+	private static final LoginFrame INSTANCE = new LoginFrame();
+	
+	private LoginFrame() {
 		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = new Dimension( 400, 300 );
-		
-		setLayout( new GridLayout( 1, 1 ) );
-		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2);
-		setSize( frameSize );
+		setPreferredSize( FrameSize.getLoginFrameSize() );
+		pack();
+		setLocation( ( DeviceSize.getScreenSize().width - FrameSize.getLoginFrameSize().width ) / 2, 
+				( DeviceSize.getScreenSize().height - FrameSize.getLoginFrameSize().height ) / 2 );
+		setResizable( false );
 		
 		setDefaultCloseOperation( EXIT_ON_CLOSE );
+		
+		getContentPane().setLayout( new GridLayout( 1, 1 ) );
+		
+		loginPanel = createLoginPanel();
+		accountCreatePanel = createAccountCreatePanel();
 		
 	}
 	
@@ -58,11 +50,15 @@ public class LoginFrame extends JFrame {
 		
 		JPanel loginPanel = new JPanel();
 		
+		JPanel topPanel = new JPanel();
+		
 		JLabel idLabel = new JLabel( "아이디" );
 		JLabel passwordLabel = new JLabel( "비밀번호" );
 		
 		JTextField idInputField = new JTextField();
 		JPasswordField passwordInputField = new JPasswordField();
+		
+		JPanel bottomPanel = new JPanel();
 		
 		JButton confirmButton = new JButton( "로그인" );
 		
@@ -71,6 +67,14 @@ public class LoginFrame extends JFrame {
 		
 		passwordLabel.setHorizontalAlignment( JLabel.CENTER );
 		passwordLabel.setFont( FontProvider.getDefaultFont() );
+		
+		topPanel.setPreferredSize( new Dimension( 0, getContentPane().getSize().height * 3 / 9 ) );
+		topPanel.setBorder( BorderFactory.createEmptyBorder( 0, getContentPane().getSize().width / 20, 0, getContentPane().getSize().width / 20 ) );
+		topPanel.setLayout( new GridLayout( 2, 2 ) );
+		topPanel.add( idLabel );
+		topPanel.add( idInputField );
+		topPanel.add( passwordLabel );
+		topPanel.add( passwordInputField );
 		
 		confirmButton.addActionListener( new ActionListener() {
 			
@@ -83,51 +87,36 @@ public class LoginFrame extends JFrame {
 					
 					if( BaseFeeLoader.loadBaseFeeInfo().getIsValid() ) {
 						
-						new MainFrame();
+						MainFrame.showOnScreen();
 					
 					} else {
 						
-						new BaseFeeSettingFrame();
+						BaseFeeSettingFrame.showOnScreen();
 						
 					}
 					
 				} else {
 					
-					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-					Dimension frameSize = new Dimension( 400, 200 );
-					
-					JFrame alertFrame = new JFrame( "로그인 실패" );
-					
-					JLabel alertLabel = new JLabel( "아이디 또는 비밀번호를 다시 확인하십시오." );
-					
-					alertLabel.setHorizontalAlignment( JLabel.CENTER );
-					alertLabel.setFont( FontProvider.getDefaultFont() );
-					
-					alertFrame.setLayout( new GridLayout( 1, 1 ) );
-					alertFrame.setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
-					alertFrame.setSize( frameSize );
-					alertFrame.setResizable( false );
-					
-					alertFrame.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
-					
-					alertFrame.add( alertLabel );
-					
-					alertFrame.setVisible( true );
+					AlertFrame.showOnScreen( "로그인 실패", "아이디 또는 비밀번호를 다시 확인하십시오.", null );
 					
 				}
+				
+				idInputField.setText( "" );
+				passwordInputField.setText( "" );
 				
 			}
 			
 		} );
 		
-		loginPanel.setLayout( new GridLayout( 3, 2 ) );
+		bottomPanel.setPreferredSize( new Dimension( 0, getContentPane().getSize().height * 2 / 9 ) );
+		bottomPanel.setBorder( BorderFactory.createEmptyBorder( 0, getContentPane().getSize().width / 4, 0, getContentPane().getSize().width / 4 ) );
+		bottomPanel.setLayout( new GridLayout( 1, 1 ) );
+		bottomPanel.add( confirmButton );
 		
-		loginPanel.add( idLabel );
-		loginPanel.add( idInputField );
-		loginPanel.add( passwordLabel );
-		loginPanel.add( passwordInputField );
-		loginPanel.add( new JPanel() );
-		loginPanel.add( confirmButton );
+		loginPanel.setBorder( BorderFactory.createEmptyBorder( getContentPane().getSize().height / 4, 0, getContentPane().getSize().height / 12, 0 ) );
+		loginPanel.setLayout( new BorderLayout() );
+		loginPanel.add( topPanel, BorderLayout.NORTH );
+		loginPanel.add( bottomPanel, BorderLayout.SOUTH );
 		
 		return loginPanel;
 		
@@ -179,44 +168,31 @@ public class LoginFrame extends JFrame {
 						
 						LoginFrame.this.dispose();
 						
-						new LoginFrame();
+						LoginFrame.showOnScreen();
 						
 					}
 					
 				} else {
 					
-					Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-					Dimension frameSize = new Dimension( 400, 200 );
-					
-					JFrame alertFrame = new JFrame( "비밀번호 재확인 요망" );
-					
-					JLabel alertLabel = new JLabel();
+					String alertSentence;
 					
 					if( id.length() < idMinLength || id.length() > idMaxLength ) {
 						
-						alertLabel.setText( "아이디를 " + idMinLength + "~" + idMaxLength + " 자리로 설정해주십시오." );
+						alertSentence = "아이디를 " + idMinLength + "~" + idMaxLength + " 자리로 설정해주십시오.";
 					
 					} else if( password.length() < passwordMinLength || password.length() > passwordMaxLength ) {
 						
-						alertLabel.setText( "비밀번호를 " + passwordMinLength + "~" + passwordMaxLength + " 자리로 설정해주십시오." );
+						alertSentence =  "비밀번호를 " + passwordMinLength + "~" + passwordMaxLength + " 자리로 설정해주십시오.";
 					
-					} else 	alertLabel.setText( "입력한 두 비밀번호가 일치하도록 입력해주세요." );
+					} else 	alertSentence = "입력한 두 비밀번호가 일치하도록 입력해주세요.";
 					
-					alertLabel.setHorizontalAlignment( JLabel.CENTER );
-					alertLabel.setFont( FontProvider.getDefaultFont() );
-					
-					alertFrame.setLayout( new GridLayout( 1, 1 ) );
-					alertFrame.setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
-					alertFrame.setSize( frameSize );
-					alertFrame.setResizable( false );
-					
-					alertFrame.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
-					
-					alertFrame.add( alertLabel );
-					
-					alertFrame.setVisible( true );
+					AlertFrame.showOnScreen( "재확인 요망", alertSentence, null );
 					
 				}
+				
+				idInputField.setText( "" );
+				passwordInputField.setText( "" );
+				passwordReInputField.setText( "" );
 				
 			}
 			
@@ -234,6 +210,37 @@ public class LoginFrame extends JFrame {
 		accountCreatePanel.add( confirmButton );
 		
 		return accountCreatePanel;
+		
+	}
+	
+	public static void showOnScreen() {
+		
+		if( AccountCheck.isThereAccountInDB() ) {
+			
+			INSTANCE.setTitle( "로그인" );
+			
+			if( SwingUtilities.getWindowAncestor( INSTANCE.loginPanel ) == null ) {
+				
+				INSTANCE.getContentPane().removeAll();
+				INSTANCE.getContentPane().add( INSTANCE.loginPanel );
+				
+			}
+			
+		
+		} else {
+			
+			INSTANCE.setTitle( "계정 생성" );
+			
+			if( SwingUtilities.getWindowAncestor( INSTANCE.accountCreatePanel ) == null ) {
+				
+				INSTANCE.getContentPane().removeAll();
+				INSTANCE.getContentPane().add( INSTANCE.accountCreatePanel );
+			
+			}
+			
+		}
+		
+		INSTANCE.setVisible( true );
 		
 	}
 	

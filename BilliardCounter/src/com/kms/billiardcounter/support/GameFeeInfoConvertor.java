@@ -1,4 +1,4 @@
-package com.kms.billiardcounter.support.gamefeeinfo;
+package com.kms.billiardcounter.support;
 
 import java.util.ArrayList;
 
@@ -48,15 +48,16 @@ public class GameFeeInfoConvertor {
 	 */
 	public static final JLabel convertToLabel( GameFeeInfo gameFeeInfo ) {
 		
-		String usedTime = String.format( "%02d", gameFeeInfo.getUsedTime() / 60) + ":" + String.format( "%02d", gameFeeInfo.getUsedTime() % 60 );;
-		int gameNumber = gameFeeInfo.getGameNumber();;
+		JLabel gameFeeInfoLabel = new JLabel();
 		
-		JLabel label = new JLabel( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + gameFeeInfo.getFee() + "원" );
+		String usedTime = String.format( "%02d", gameFeeInfo.getUsedTime() / 60) + ":" + String.format( "%02d", gameFeeInfo.getUsedTime() % 60 );
+		int gameNumber = gameFeeInfo.getGameNumber();
 		
-		label.setFont( FontProvider.getDefaultFont() );
-		label.setHorizontalAlignment( JLabel.CENTER );
+		gameFeeInfoLabel.setHorizontalAlignment( JLabel.CENTER );
+		gameFeeInfoLabel.setFont( FontProvider.getDefaultFont() );
+		gameFeeInfoLabel.setText( gameNumber + " 게임 - 사용 시간 " + usedTime + ", 요금 " + gameFeeInfo.getFee() + "원" );
 		
-		return label;
+		return gameFeeInfoLabel;
 		
 	}
 	

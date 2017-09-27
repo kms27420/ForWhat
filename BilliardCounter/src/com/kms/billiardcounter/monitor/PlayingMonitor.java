@@ -1,8 +1,10 @@
-package com.kms.billiardcounter.core.mainframe;
+package com.kms.billiardcounter.monitor;
 
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -13,10 +15,11 @@ import javax.swing.border.BevelBorder;
 
 import com.kms.billiardcounter.database.base_fee.BaseFeeLoader;
 import com.kms.billiardcounter.database.game_list.GameListModifier;
+import com.kms.billiardcounter.database.game_monitor.GameMonitorLoader;
 import com.kms.billiardcounter.database.game_list.GameListLoader;
 import com.kms.billiardcounter.font.FontProvider;
 import com.kms.billiardcounter.support.BaseFeeInfo;
-import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
+import com.kms.billiardcounter.support.GameFeeInfo;
 
 /**
  * 
@@ -28,9 +31,9 @@ import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
 
 public class PlayingMonitor extends JPanel {
 	
-	public interface OnGameEndListener {
+	public interface OnEndGameListener {
 		
-		public void onGameEnd();
+		public void onEndGame();
 		
 	}
 	
@@ -39,34 +42,46 @@ public class PlayingMonitor extends JPanel {
 	
 	private  FeeCalculator calculator;
 	
-	public PlayingMonitor( int tableNumber, OnGameEndListener onGameEndListener ){
+	public PlayingMonitor( int row, int col, OnEndGameListener onEndGameListener ){
 		
-		init();
-		
-		add( usedTimeLabel );
-		add( feeLabel );
-		add( createGameEndButton( tableNumber, onGameEndListener ) );
-		
-	}
-	
-	private void init(){
+		initComponents();
 		
 		setBorder( new BevelBorder( BevelBorder.RAISED ) );
 		setLayout( new GridLayout( 3, 1 ) );
+		add( usedTimeLabel );
+		add( feeLabel );
+		add( createGameEndButton( row, col, onEndGameListener ) );
+		
+		addPropertyChangeListener( new PropertyChangeListener() {
+			
+			@Override
+			public void propertyChange(PropertyChangeEvent evt) {
+				
+				if( evt.getPropertyName() == "ancestor" && evt.getNewValue() != null && evt.getOldValue() == null ) {
+					
+					refresh();
+					
+				}
+				
+			}
+			
+		} );
+		
+	}
+	
+	private void initComponents(){
 		
 		usedTimeLabel = new JLabel();
-		
 		usedTimeLabel.setFont( FontProvider.getDefaultFont() );
 		usedTimeLabel.setHorizontalAlignment( JLabel.CENTER );
 		
 		feeLabel = new JLabel();
-		
 		feeLabel.setFont( FontProvider.getDefaultFont() );
 		feeLabel.setHorizontalAlignment( JLabel.CENTER );
 		
 	}
 	
-	private JButton createGameEndButton( int tableNumber, OnGameEndListener onGameEndListener ) {
+	private JButton createGameEndButton( int row, int col, OnEndGameListener onEndGameListener ) {
 		
 		JButton gameEndButton = new JButton( "게임 종료" );
 		
@@ -76,6 +91,7 @@ public class PlayingMonitor extends JPanel {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
+				int tableNumber = GameMonitorLoader.getTableNumber( row, col );
 				GameFeeInfo gameFeeInfo = new GameFeeInfo();
 				
 				calculator.interrupt();
@@ -91,7 +107,7 @@ public class PlayingMonitor extends JPanel {
 				
 				if( GameListModifier.saveGameFeeInfoToDB( gameFeeInfo ) ){
 				
-					onGameEndListener.onGameEnd();
+					onEndGameListener.onEndGame();
 				
 				}
 				
@@ -103,8 +119,9 @@ public class PlayingMonitor extends JPanel {
 		
 	}
 	
-	public void refresh() {
+	private void refresh() {
 		
+		calculator = null;
 		calculator = new FeeCalculator();
 		
 		usedTimeLabel.setText( "사용 시간  00:00" );

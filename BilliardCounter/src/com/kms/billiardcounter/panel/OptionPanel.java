@@ -1,4 +1,4 @@
-package com.kms.billiardcounter.core.mainframe;
+package com.kms.billiardcounter.panel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,13 +12,14 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.kms.billiardcounter.core.ancillaryframe.BaseFeeSettingFrame;
-import com.kms.billiardcounter.core.ancillaryframe.DayTotalSalesFrame;
-import com.kms.billiardcounter.core.ancillaryframe.PasswordChangeFrame;
-import com.kms.billiardcounter.core.ancillaryframe.SearchResultFrame;
-import com.kms.billiardcounter.core.ancillaryframe.admin_approval.AdminDoorLockFrame;
-import com.kms.billiardcounter.core.ancillaryframe.admin_approval.FrameOpener;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.frame.AdminDoorLockFrame;
+import com.kms.billiardcounter.frame.BaseFeeSettingFrame;
+import com.kms.billiardcounter.frame.DayTotalSalesFrame;
+import com.kms.billiardcounter.frame.FrameOpener;
+import com.kms.billiardcounter.frame.PasswordChangeFrame;
+import com.kms.billiardcounter.frame.SearchResultFrame;
+import com.kms.billiardcounter.size.FrameSize;
 
 /**
  * 
@@ -32,7 +33,7 @@ public class OptionPanel extends JPanel{
 	
 	public OptionPanel(){
 		
-		initThisPanel();
+		setLayout( new BorderLayout() );
 		
 		add( createMenuPanel(), BorderLayout.WEST );
 		add( createTitleLabel(), BorderLayout.CENTER );
@@ -40,21 +41,12 @@ public class OptionPanel extends JPanel{
 		
 	}
 	
-	private void initThisPanel(){
-		
-		setLayout( new BorderLayout() );
-	
-	}
-	
 	private JLabel createTitleLabel(){
 		
-		final String TITLE_NAME = "당구장 카운터";
-		
-		JLabel titleLabel = new JLabel( TITLE_NAME );
+		JLabel titleLabel = new JLabel( "당구장 카운터" );
 		
 		titleLabel.setFont( FontProvider.getDefaultFont( 40 ) );
 		titleLabel.setHorizontalAlignment( JLabel.CENTER );
-		titleLabel.setBackground( Color.GREEN );
 		
 		return titleLabel;
 	
@@ -70,17 +62,17 @@ public class OptionPanel extends JPanel{
 		
 		JButton searchButton = new JButton( "검색하기" );
 		
-		searchSentenceField.setPreferredSize( new Dimension(200, 50) );
+		searchSentenceField.setPreferredSize( new Dimension( FrameSize.getMainFrameSize().width * 2 / 15, 50 ) );
 		searchSentenceField.setFont( FontProvider.getDefaultFont() );
 		
-		searchButton.setPreferredSize( new Dimension(100, 50) );
+		searchButton.setPreferredSize( new Dimension( FrameSize.getMainFrameSize().width / 15, 50 ) );
 		searchButton.setFont( FontProvider.getDefaultFont() );
 		searchButton.addActionListener( new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new SearchResultFrame( searchSentenceField.getText() );
+				SearchResultFrame.showOnScreen( searchSentenceField.getText() );
 			
 			}
 			
@@ -91,7 +83,7 @@ public class OptionPanel extends JPanel{
 		componentsPanel.add( searchSentenceField, BorderLayout.CENTER );
 		componentsPanel.add( searchButton, BorderLayout.EAST );
 		
-		gameSearchPanel.setPreferredSize( new Dimension(300, 50) );
+		gameSearchPanel.setPreferredSize( new Dimension( FrameSize.getMainFrameSize().width / 5, 0 ) );
 		gameSearchPanel.setLayout( new BorderLayout() );
 		
 		gameSearchPanel.add( componentsPanel, BorderLayout.SOUTH );
@@ -113,12 +105,12 @@ public class OptionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				new AdminDoorLockFrame( new FrameOpener() {
+				AdminDoorLockFrame.showOnScreen( new FrameOpener() {
 					
 					@Override
 					public void openFrame() {
 
-						new PasswordChangeFrame();
+						PasswordChangeFrame.showOnScreen();
 						
 					}
 					
@@ -133,11 +125,11 @@ public class OptionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new AdminDoorLockFrame( new FrameOpener() {
+				AdminDoorLockFrame.showOnScreen( new FrameOpener() {
 					
 					public void openFrame() {
 						
-						new BaseFeeSettingFrame();
+						BaseFeeSettingFrame.showOnScreen();
 						
 					}
 					
@@ -152,13 +144,13 @@ public class OptionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				
-				new DayTotalSalesFrame();
+				DayTotalSalesFrame.showOnScreen();
 				
 			}
 			
 		} );
 		
-		menuPanel.setPreferredSize( new Dimension(300, 0) );
+		menuPanel.setPreferredSize( new Dimension( FrameSize.getMainFrameSize().width / 5, 0) );
 		menuPanel.setLayout( new GridLayout( 3, 1 ) );
 		
 		menuPanel.add( passwordChangeButton );

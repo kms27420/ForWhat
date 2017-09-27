@@ -1,10 +1,9 @@
-package com.kms.billiardcounter.core.ancillaryframe;
+package com.kms.billiardcounter.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -18,12 +17,13 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import com.kms.billiardcounter.database.game_list.GameListModifier;
-import com.kms.billiardcounter.database.game_monitor.GameMonitorModifier;
 import com.kms.billiardcounter.database.game_list.GameListLoader;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.size.DeviceSize;
+import com.kms.billiardcounter.size.FrameSize;
+import com.kms.billiardcounter.support.GameFeeInfo;
+import com.kms.billiardcounter.support.GameFeeInfoConvertor;
 import com.kms.billiardcounter.support.NumericManufacturer;
-import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfo;
-import com.kms.billiardcounter.support.gamefeeinfo.GameFeeInfoConvertor;
 
 /**
  * 
@@ -62,33 +62,29 @@ public class PaymentFrame extends JFrame {
 	private OnSelectedGamePayListener onSelectedGamePayListener = null;
 	private OnSelectedGameAddListener onSelectedGameAddListener = null;
 	
+	private final String SELECT_ALL = "SELECT_ALL";
+	private final String SELECT_PARTIAL = "SELECT_PARTIAL";
+	
+	private JLabel selectedOptionLabel;
 	private ArrayList<GameFeeInfo> selectedGameFeeInfoList = new ArrayList<GameFeeInfo>();
 	
 	public PaymentFrame( int tableNumber, OnPaymentCompleteListener onPaymentCompleteListener ) {
 		
-		initThisFrame( tableNumber );
+		setPreferredSize( FrameSize.getPaymentFrameSize() );
+		pack();
+		setLocation( ( DeviceSize.getScreenSize().width - FrameSize.getPaymentFrameSize().width ) / 2, 
+				( DeviceSize.getScreenSize().height - FrameSize.getPaymentFrameSize().height ) / 2 );
+		setResizable( false );
 		
-		add( createSelectOptionPanel(), BorderLayout.NORTH );
-		add( createNonPaidGameFeeInfoListPanel( tableNumber, onPaymentCompleteListener ), BorderLayout.CENTER );
-		add( createPaymentControlPanel(), BorderLayout.SOUTH );
+		setTitle( tableNumber + "번 테이블 계산" );		
+		setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
+		
+		getContentPane().setLayout( new BorderLayout() );
+		getContentPane().add( createSelectOptionPanel(), BorderLayout.NORTH );
+		getContentPane().add( createNonPaidGameFeeInfoListPanel( tableNumber, onPaymentCompleteListener ), BorderLayout.CENTER );
+		getContentPane().add( createPaymentControlPanel(), BorderLayout.SOUTH );
 		
 		setVisible( true );
-		
-	}
-	
-	private void initThisFrame( int tableNumber ) {
-		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = new Dimension( 600, 400 );
-		
-		setTitle( tableNumber + "번 테이블 계산" );
-		
-		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
-		setSize( frameSize );
-		
-		setLayout( new BorderLayout() );
-		
-		setDefaultCloseOperation( DO_NOTHING_ON_CLOSE );
 		
 	}
 	
@@ -99,9 +95,7 @@ public class PaymentFrame extends JFrame {
 		JLabel selectAllGameLabel = new JLabel( "전체 선택" );
 		JLabel selectPartialGameLabel = new JLabel( "부분 선택" );
 		
-		ArrayList<JLabel> selectedOptionLabel = new ArrayList<JLabel>();
-		
-		selectedOptionLabel.add( selectAllGameLabel );
+		selectedOptionLabel = selectAllGameLabel;
 		
 		MouseListener labelListMouseListener = new MouseListener() {
 			
@@ -120,7 +114,7 @@ public class PaymentFrame extends JFrame {
 			@Override
 			public void mouseExited(MouseEvent e) {
 
-				if( selectedOptionLabel.contains( e.getComponent() ) ) {
+				if( selectedOptionLabel.equals( e.getComponent() ) ) {
 					
 					e.getComponent().setBackground( Color.LIGHT_GRAY.brighter() );
 					
@@ -135,7 +129,7 @@ public class PaymentFrame extends JFrame {
 			@Override
 			public void mouseEntered(MouseEvent e) {
 				
-				if( !selectedOptionLabel.contains( e.getComponent() ) ) {
+				if( !selectedOptionLabel.equals( e.getComponent() ) ) {
 					
 					e.getComponent().setBackground( Color.LIGHT_GRAY );
 				
@@ -146,13 +140,12 @@ public class PaymentFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 
-				if( !selectedOptionLabel.contains( e.getComponent() ) ) {
+				if( !selectedOptionLabel.equals( e.getComponent() ) ) {
 					
-					selectedOptionLabel.get( 0 ).setBackground( Color.LIGHT_GRAY.darker() );
+					selectedOptionLabel.setBackground( Color.LIGHT_GRAY.darker() );
 					e.getComponent().setBackground( Color.LIGHT_GRAY.brighter() );
 					
-					selectedOptionLabel.clear();
-					selectedOptionLabel.add( (JLabel)e.getComponent() );
+					selectedOptionLabel = (JLabel)e.getComponent();
 					
 					onOptionChangeListener.onOptionChange();
 					
@@ -162,12 +155,14 @@ public class PaymentFrame extends JFrame {
 			
 		};
 		
+		selectAllGameLabel.setName( SELECT_ALL );
 		selectAllGameLabel.setOpaque( true );
 		selectAllGameLabel.setBackground( Color.LIGHT_GRAY.brighter() );
 		selectAllGameLabel.setFont( FontProvider.getDefaultFont() );
 		selectAllGameLabel.setHorizontalAlignment( JLabel.CENTER );
 		selectAllGameLabel.addMouseListener( labelListMouseListener );
 		
+		selectPartialGameLabel.setName( SELECT_PARTIAL );
 		selectPartialGameLabel.setOpaque( true );
 		selectPartialGameLabel.setBackground( Color.LIGHT_GRAY.darker() );
 		selectPartialGameLabel.setFont( FontProvider.getDefaultFont() );
@@ -258,7 +253,7 @@ public class PaymentFrame extends JFrame {
 			@Override
 			public void onOptionChange() {
 				
-				if( nonPaidGameFeeInfoLabelList.get(0).getMouseListeners().length == 0 ) {
+				if( selectedOptionLabel.getName().equals( SELECT_PARTIAL ) ) {
 					
 					for( int index = 0; index < nonPaidGameFeeInfoLabelList.size(); index++ ) {
 						
@@ -299,11 +294,7 @@ public class PaymentFrame extends JFrame {
 					
 					PaymentFrame.this.dispose();
 					
-					if( GameMonitorModifier.endUseThisGameMonitor( tableNumber ) ) {
-					
-						onPaymentCompleteListener.onPaymentComplete();
-					
-					}
+					onPaymentCompleteListener.onPaymentComplete();
 					
 					return;
 					

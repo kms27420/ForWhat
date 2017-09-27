@@ -1,9 +1,8 @@
-package com.kms.billiardcounter.core.ancillaryframe;
+package com.kms.billiardcounter.frame;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -13,10 +12,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.kms.billiardcounter.core.mainframe.MainFrame;
 import com.kms.billiardcounter.database.base_fee.BaseFeeLoader;
 import com.kms.billiardcounter.database.base_fee.BaseFeeModifier;
 import com.kms.billiardcounter.font.FontProvider;
+import com.kms.billiardcounter.size.DeviceSize;
+import com.kms.billiardcounter.size.FrameSize;
 import com.kms.billiardcounter.support.BaseFeeInfo;
 import com.kms.billiardcounter.support.NumericManufacturer;
 
@@ -29,35 +29,20 @@ import com.kms.billiardcounter.support.NumericManufacturer;
  */
 public class BaseFeeSettingFrame extends JFrame{
 
-	public BaseFeeSettingFrame() {
-		
-		initThisFrame();
-		
-		add( createBaseFeeSettingPanel() );
-		
-		setVisible( true );
-		
-	}
+	private static final BaseFeeSettingFrame INSTANCE = new BaseFeeSettingFrame();
 	
-	private void initThisFrame() {
+	private BaseFeeSettingFrame() {
 		
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		Dimension frameSize = new Dimension( 500, 400 );
+		setPreferredSize( FrameSize.getBaseFeeSettingFrameSize() );
+		pack();
+		setLocation( ( DeviceSize.getScreenSize().width - FrameSize.getBaseFeeSettingFrameSize().width ) / 2, 
+				( DeviceSize.getScreenSize().height - FrameSize.getBaseFeeSettingFrameSize().height ) / 2 );
+		setResizable( false );
 		
 		setTitle( "기본 요금 설정" );
 		
-		setLocation( screenSize.width / 2 - frameSize.width / 2, screenSize.height / 2 - frameSize.height / 2 );
-		setSize( frameSize );
-		
-		setLayout( new GridLayout( 1, 1 ) );
-		
-		setDefaultCloseOperation( DISPOSE_ON_CLOSE );
-		
-		if( !BaseFeeLoader.loadBaseFeeInfo().getIsValid() ) {
-			
-			setDefaultCloseOperation( EXIT_ON_CLOSE );
-			
-		}
+		getContentPane().setLayout( new GridLayout( 1, 1 ) );
+		getContentPane().add( createBaseFeeSettingPanel() );
 		
 	}
 	
@@ -78,7 +63,7 @@ public class BaseFeeSettingFrame extends JFrame{
 		
 		JPanel bottomPanel = new JPanel();
 		
-		JButton saveContentsButton = new JButton( "완료" );
+		JButton confirmButton = new JButton( "완료" );
 		
 		baseFeePerMinuteLabel.setFont( FontProvider.getDefaultFont() );
 		baseFeePerMinuteLabel.setHorizontalAlignment( JLabel.CENTER );
@@ -89,7 +74,7 @@ public class BaseFeeSettingFrame extends JFrame{
 		feeIncreaseTimeLabel.setFont( FontProvider.getDefaultFont() );
 		feeIncreaseTimeLabel.setHorizontalAlignment( JLabel.CENTER );
 		
-		topPanel.setPreferredSize( new Dimension( 0, 300 ) );
+		topPanel.setPreferredSize( new Dimension( 0, getContentPane().getSize().height * 3 / 4 ) );
 		topPanel.setLayout( new GridLayout( 3, 2 ) );
 		
 		topPanel.add( baseFeePerMinuteLabel );
@@ -99,8 +84,8 @@ public class BaseFeeSettingFrame extends JFrame{
 		topPanel.add( feeIncreaseTimeLabel );
 		topPanel.add( feeIncreaseTimeTextField );
 		
-		saveContentsButton.setFont( FontProvider.getDefaultFont() );
-		saveContentsButton.addActionListener( new ActionListener() {
+		confirmButton.setFont( FontProvider.getDefaultFont() );
+		confirmButton.addActionListener( new ActionListener() {
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -123,27 +108,47 @@ public class BaseFeeSettingFrame extends JFrame{
 						
 						BaseFeeSettingFrame.this.dispose();
 						
-						new MainFrame();
+						MainFrame.showOnScreen();
 						
 					}
 					
 				}
 				
+				baseFeePerMinuteTextField.setText( "" );
+				baseFeeTimeTextField.setText( "" );
+				feeIncreaseTimeTextField.setText( "" );
+				
 			}
 			
 		} );
 		
-		bottomPanel.setPreferredSize( new Dimension( 0, 100 ) );
+		bottomPanel.setPreferredSize( new Dimension( 0, getContentPane().getSize().height / 4 ) );
 		bottomPanel.setLayout( new GridLayout( 1, 1) );
 		
-		bottomPanel.add( saveContentsButton );
+		bottomPanel.add( confirmButton );
 		
 		baseFeeSettingPanel.setLayout( new BorderLayout() );
 		
-		baseFeeSettingPanel.add( topPanel, BorderLayout.CENTER );
+		baseFeeSettingPanel.add( topPanel, BorderLayout.NORTH );
 		baseFeeSettingPanel.add( bottomPanel, BorderLayout.SOUTH );
 		
 		return baseFeeSettingPanel;
+		
+	}
+	
+	public static void showOnScreen() {
+		
+		if( !BaseFeeLoader.loadBaseFeeInfo().getIsValid() ) {
+			
+			INSTANCE.setDefaultCloseOperation( EXIT_ON_CLOSE );
+			
+		} else {
+			
+			INSTANCE.setDefaultCloseOperation( DISPOSE_ON_CLOSE );
+			
+		}
+		
+		INSTANCE.setVisible( true );
 		
 	}
 	

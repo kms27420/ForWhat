@@ -72,5 +72,5 @@ public class BaseFeeInfo {
 		return feeIncreaseTime;
 		
 	}
-	
+		
 }

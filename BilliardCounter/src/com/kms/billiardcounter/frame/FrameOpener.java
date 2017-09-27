@@ -1,4 +1,4 @@
-package com.kms.billiardcounter.core.ancillaryframe.admin_approval;
+package com.kms.billiardcounter.frame;
 
 /**
  * 

@@ -1,10 +1,8 @@
 package com.kms.billiardcounter.database.base_fee;
 
-import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.Statement;
 
-import com.kms.billiardcounter.database.connection.BilliardCounterConnector;
+import com.kms.billiardcounter.database.connection.DatabaseConnector;
 import com.kms.billiardcounter.support.BaseFeeInfo;
 
 /**
@@ -24,12 +22,10 @@ public class BaseFeeLoader {
 			
 			BaseFeeInfo baseFeeInfo = null;
 			
-			Connection conn = BilliardCounterConnector.getConnection();
-			Statement stmt = conn.createStatement();
 			String sql = "SELECT * "
 					+ "FROM billiard_counter.BASE_FEE;";
 			
-			ResultSet rs = stmt.executeQuery( sql );
+			ResultSet rs = DatabaseConnector.getStatement().executeQuery( sql );
 			
 			if( rs.next() ) {
 				
@@ -42,14 +38,12 @@ public class BaseFeeLoader {
 			}
 			
 			rs.close();
-			stmt.close();
-			conn.close();
 			
 			return baseFeeInfo;
 			
 		} catch( Exception e ) {
 			
-			//e.printStackTrace();
+			e.printStackTrace();
 			
 			return new BaseFeeInfo();
 			
